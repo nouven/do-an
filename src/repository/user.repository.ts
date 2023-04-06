@@ -16,7 +16,7 @@ export class UserRepository
     super(userRepository);
   }
 
-  createEntity(data: any): UserEntity {
+  createEntity(data: any, entity?: UserEntity): UserEntity {
     const userEntity = new UserEntity();
 
     userEntity.code = data.code;

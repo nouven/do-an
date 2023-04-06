@@ -1,3 +1,4 @@
+import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponsePayload } from './response-payload';
 
@@ -7,13 +8,15 @@ export class ResponseBuilder<T> {
   };
 
   constructor(data?: T) {
-    this.payload.data = data;
+    if (data) {
+      this.payload.data = data;
+    }
   }
 
   withCode(code: ResponseCodeEnum, withMessage = true): ResponseBuilder<T> {
     this.payload.statusCode = code;
     if (withMessage) {
-      this.payload.message = 'message';
+      this.payload.message = ErrorMessageEnum[ResponseCodeEnum[code]];
     }
 
     return this;

@@ -7,8 +7,6 @@ export class ApiError extends Error {
 
   private readonly _message: string;
 
-  // private _debug: unknown;
-
   constructor(errorCode: ResponseCodeEnum, message?: string) {
     super(message);
 
@@ -27,7 +25,7 @@ export class ApiError extends Error {
   toResponse(): ResponsePayload<unknown> {
     return new ResponseBuilder<unknown>()
       .withCode(this._errorCode)
-      .withMessage(this.message)
+      .withMessage(this._message)
       .build();
   }
 }

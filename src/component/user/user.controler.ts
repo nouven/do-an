@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { response } from 'express';
 import { CreateUserReqDto } from './dto/request/create-user.req.dto';
 import { UserServiceInterface } from './interface/user.service.interface';
 
@@ -16,6 +17,8 @@ export class UserController {
 
   @Post('create')
   public async create(@Body() body: CreateUserReqDto) {
-    return this.userService.create(body);
+    const { request, responseError } = body;
+    console.log('<============>   ', responseError);
+    return await this.userService.create(request);
   }
 }

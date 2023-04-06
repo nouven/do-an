@@ -2,11 +2,11 @@ import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'src/core/dto/base.dto';
 
 export class CreateUserReqDto extends BaseDto {
-  @IsNumber()
+  @IsString()
   @MaxLength(20)
   code: string;
 
+  @MaxLength(20)
   @IsString()
-  @MaxLength(255)
-  name: string;
+  email: string;
 }

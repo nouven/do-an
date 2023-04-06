@@ -10,7 +10,7 @@ export abstract class BaseAbstractRepository<T>
   protected constructor(entity: Repository<T>) {
     this.entity = entity;
   }
-  createEntity(data: any): T {
+  createEntity(data: any, entity?: T): T {
     console.log({ data });
 
     throw new Error('Method not implemented.');
