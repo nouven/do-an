@@ -19,9 +19,21 @@ export class UserRepository
   createEntity(data: any, entity?: UserEntity): UserEntity {
     const userEntity = new UserEntity();
 
+    userEntity.username = data.username;
+    userEntity.password = data.password;
+    userEntity.name = data.name;
     userEntity.code = data.code;
     userEntity.email = data.email;
+    userEntity.dateOfBirth = data.dateOfBirth;
+    userEntity.phone = data.phone;
+    userEntity.status = data.status;
 
     return userEntity;
+  }
+  public async getLatestId() {
+    return await this.userRepository
+      .createQueryBuilder('u')
+      .select(['max(u.id) AS "id"'])
+      .getRawOne();
   }
 }

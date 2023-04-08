@@ -1,7 +1,17 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { response } from 'express';
 import { CreateUserReqDto } from './dto/request/create-user.req.dto';
 import { UserServiceInterface } from './interface/user.service.interface';
+import { isEmpty } from 'lodash';
 
 @Controller('users')
 export class UserController {
@@ -18,7 +28,19 @@ export class UserController {
   @Post('create')
   public async create(@Body() body: CreateUserReqDto) {
     const { request, responseError } = body;
-    console.log('<============>   ', responseError);
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
     return await this.userService.create(request);
+  }
+
+  @Get(':id')
+  public async getDetail(@Param('id', new ParseIntPipe()) id) {
+    return await this.userService.getDetail(id);
+  }
+
+  @Delete(':id')
+  public async delete(@Param('id', new ParseIntPipe()) id) {
+    return await this.userService.delete(id);
   }
 }

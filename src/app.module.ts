@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationPipe } from './core/pipe/validation.pipe';
+import { APP_PIPE } from '@nestjs/core';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { AuthModule } from './component/auth/auth.module';
 
 @Module({
   imports: [
@@ -32,11 +35,18 @@ import { ValidationPipe } from './core/pipe/validation.pipe';
       //extra: {
       //  max: parseInt(process.env.DATABASE_MAX_POOL) || 20,
       //},
-      //namingStrategy: new SnakeNamingStrategy(),
+      namingStrategy: new SnakeNamingStrategy(),
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [ValidationPipe, AppService],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    AppService,
+  ],
 })
 export class AppModule { }

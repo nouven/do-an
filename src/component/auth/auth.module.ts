@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entity/user.entity';
 import { UserRepository } from 'src/repository/user.repository';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
   exports: [],
-  controllers: [UserController],
+  controllers: [AuthController],
   providers: [
     {
-      provide: 'UserServiceInterface',
-      useClass: UserService,
+      provide: 'AuthServiceInterface',
+      useClass: AuthService,
     },
     {
       provide: 'UserRepositoryInterface',
@@ -20,4 +20,4 @@ import { UserService } from './user.service';
     },
   ],
 })
-export class UserModule { }
+export class AuthModule { }
