@@ -35,6 +35,8 @@ export class AuthService implements AuthServiceInterface {
       expiresIn: '1d',
     });
 
-    return new ResponseBuilder(token).withCode(ResponseCodeEnum.SUCCESS);
+    return new ResponseBuilder(token)
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
   }
 }

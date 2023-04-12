@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './component/user/user.module';
@@ -9,12 +10,28 @@ import { ValidationPipe } from './core/pipe/validation.pipe';
 import { APP_PIPE } from '@nestjs/core';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AuthModule } from './component/auth/auth.module';
+import { FileModule } from './component/file/file.module';
+import { FirebaseModule } from 'nestjs-firebase';
+import { StorageModule } from './component/storage/storage.module';
+
+//const firebaseConfig = {
+//  apiKey: "AIzaSyAkztoAUoCU4MeDc1jRkVyl7vPRO3t6Tf0",
+//  authDomain: "doan-89e3e.firebaseapp.com",
+//  projectId: "doan-89e3e",
+//  storageBucket: "doan-89e3e.appspot.com",
+//  messagingSenderId: "426978642179",
+//  appId: "1:426978642179:web:bbfc3127655524a1ac4136",
+//  measurementId: "G-BX1833SD63"
+//};
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    //FirebaseModule.forRoot({
+    //  googleApplicationCredential: './config/firebase.json',
+    //}),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -39,6 +56,8 @@ import { AuthModule } from './component/auth/auth.module';
     }),
     UserModule,
     AuthModule,
+    FileModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [
