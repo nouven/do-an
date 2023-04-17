@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { isEmpty } from 'lodash';
+import { GetFileURLReqDto } from './dto/request/get-file-url.req.dto';
 import { UploadFileReqDto } from './dto/request/upload-file.req.dto';
 import { FileServiceInterface } from './interface/file.service.interface';
 
@@ -29,11 +30,11 @@ export class FileController {
   }
 
   @Get('')
-  public async getFileUrl(@Query() query: UploadFileReqDto) {
+  public async getFileUrl(@Query() query: GetFileURLReqDto) {
     const { request, responseError } = query;
     if (!isEmpty(responseError)) {
       return responseError;
     }
-    return this.FileService.getFileUrl('test.pdf');
+    return this.FileService.getFileUrl(request);
   }
 }

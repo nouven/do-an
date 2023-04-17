@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Query } from '@nestjs/common';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { UploadFileReqDto } from './dto/request/upload-file.req.dto';
@@ -6,6 +6,8 @@ import { FileServiceInterface } from './interface/file.service.interface';
 
 import { Storage } from '@google-cloud/storage';
 import { MinioStorageServiceInterface } from '../minio-storage/interface/minio-storage.service.interface';
+import { GetFileURLReqDto } from './dto/request/get-file-url.req.dto';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class FileService implements FileServiceInterface {
@@ -22,7 +24,7 @@ export class FileService implements FileServiceInterface {
     return this.minioStorageService.getList();
   }
 
-  public async getFileUrl(): Promise<any> {
-    return this.minioStorageService.getFileUrl('test.pdf');
+  public async getFileUrl(req: GetFileURLReqDto): Promise<any> {
+    return this.minioStorageService.getFileUrl(req);
   }
 }

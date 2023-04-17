@@ -7,8 +7,9 @@ services:
     container_name: ${MINIO_CONTAINER_NAME}
     ports:
       - ${MINIO_CONTAINER_PORT}:${MINIO_PORT}
+      - '9001:9001'
     volumes:
-      - ./storage:/data
+      - minio-storage:/data
     environment:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: qwe@1234
@@ -30,3 +31,4 @@ services:
       - ${DATABASE_CONTAINER_PORT}:${DATABASE_PORT}
 volumes:
   postgres-db:
+  minio-storage:
