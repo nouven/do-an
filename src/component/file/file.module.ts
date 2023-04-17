@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { StorageModule } from '../storage/storage.module';
+import { MinioStorageModule } from '../minio-storage/minio-storage.module';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
 @Module({
-  imports: [StorageModule],
+  imports: [MinioStorageModule],
   exports: [],
   controllers: [FileController],
   providers: [

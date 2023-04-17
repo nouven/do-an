@@ -5,22 +5,24 @@ import { UploadFileReqDto } from './dto/request/upload-file.req.dto';
 import { FileServiceInterface } from './interface/file.service.interface';
 
 import { Storage } from '@google-cloud/storage';
-import { StorageServiceInterface } from '../storage/interface/storage.service.interface';
+import { MinioStorageServiceInterface } from '../minio-storage/interface/minio-storage.service.interface';
 
 @Injectable()
 export class FileService implements FileServiceInterface {
   constructor(
-    @Inject('StorageServiceInterface')
-    private readonly storageService: StorageServiceInterface,
+    @Inject('MinioStorageServiceInterface')
+    private readonly minioStorageService: MinioStorageServiceInterface,
   ) { }
 
   public async upload(req: UploadFileReqDto): Promise<any> {
-    const file = req.files[0];
+    return this.minioStorageService.uplaod(req);
+  }
 
-    const x = await this.storageService.getList();
+  public async getList(): Promise<any> {
+    return this.minioStorageService.getList();
+  }
 
-    return x;
-
-    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+  public async getFileUrl(): Promise<any> {
+    return this.minioStorageService.getFileUrl('test.pdf');
   }
 }

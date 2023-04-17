@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { UploadFileReqDto } from './dto/request/upload-file.req.dto';
 import { FileServiceInterface } from './interface/file.service.interface';
@@ -17,5 +17,23 @@ export class FileController {
       return responseError;
     }
     return this.FileService.upload(request);
+  }
+
+  @Get('/list')
+  public async getList(@Query() query: UploadFileReqDto) {
+    const { request, responseError } = query;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return this.FileService.getList();
+  }
+
+  @Get('')
+  public async getFileUrl(@Query() query: UploadFileReqDto) {
+    const { request, responseError } = query;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return this.FileService.getFileUrl('test.pdf');
   }
 }

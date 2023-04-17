@@ -13,6 +13,7 @@ import { AuthModule } from './component/auth/auth.module';
 import { FileModule } from './component/file/file.module';
 import { FirebaseModule } from 'nestjs-firebase';
 import { StorageModule } from './component/storage/storage.module';
+import { MinioStorageModule } from './component/minio-storage/minio-storage.module';
 
 //const firebaseConfig = {
 //  apiKey: "AIzaSyAkztoAUoCU4MeDc1jRkVyl7vPRO3t6Tf0",
@@ -57,7 +58,8 @@ import { StorageModule } from './component/storage/storage.module';
     UserModule,
     AuthModule,
     FileModule,
-    StorageModule,
+    //StorageModule,
+    MinioStorageModule,
   ],
   controllers: [AppController],
   providers: [

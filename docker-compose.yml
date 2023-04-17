@@ -1,0 +1,32 @@
+version: '3'
+services:
+  minio:
+    image: minio/minio
+    env_file:
+      - .env
+    container_name: ${MINIO_CONTAINER_NAME}
+    ports:
+      - ${MINIO_CONTAINER_PORT}:${MINIO_PORT}
+    volumes:
+      - ./storage:/data
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: qwe@1234
+    command: server --console-address ":9001" /data
+
+  postgres:
+    container_name: ${DATABASE_CONTAINER_NAME}
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-db:/data/postgres
+    ports:
+      - ${DATABASE_CONTAINER_PORT}:${DATABASE_PORT}
+volumes:
+  postgres-db:
