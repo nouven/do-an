@@ -11,14 +11,14 @@ export class StorageService implements StorageServiceInterface {
   private bucket: string;
 
   constructor() {
-    this.storage = new Storage({
-      projectId: storageConfig.projectId,
-      credentials: {
-        client_email: storageConfig.clientEmail,
-        private_key: storageConfig.privateKey,
-      },
-    });
-    this.bucket = storageConfig.bucket;
+    //this.storage = new Storage({
+    //  projectId: storageConfig.projectId,
+    //  credentials: {
+    //    client_email: storageConfig.clientEmail,
+    //    private_key: storageConfig.privateKey,
+    //  },
+    //});
+    //this.bucket = storageConfig.bucket;
   }
 
   async save(

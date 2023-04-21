@@ -1,4 +1,4 @@
-export class BaseDto {
+export class BaseReqDto {
   request: any;
 
   responseError: any;

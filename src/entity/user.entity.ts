@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { FileEntity } from './file.entity';
+import { KeyEntity } from './key.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -29,12 +31,6 @@ export class UserEntity {
   name: string;
 
   @Column({})
-  dateOfBirth: string;
-
-  @Column({})
-  phone: string;
-
-  @Column({})
   status: string;
 
   @Column({})
@@ -45,4 +41,10 @@ export class UserEntity {
 
   @Column({})
   deletedAt: string;
+
+  //@OneToMany(() => KeyEntity, (key) => key.user)
+  //keys?: KeyEntity[];
+
+  //@OneToMany(() => FileEntity, (file) => file.user)
+  //files?: FileEntity[];
 }

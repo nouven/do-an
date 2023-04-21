@@ -6,4 +6,5 @@ export enum ErrorMessageEnum {
   BAD_REQUEST = 'Bad request',
   SUCCESS = 'Success',
   TOKEN_EXPIRED = 'Token expired',
+  UPLOAD_FAILED = 'upload failed',
 }

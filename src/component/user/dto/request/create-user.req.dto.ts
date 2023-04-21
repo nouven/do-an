@@ -5,7 +5,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import { BaseDto } from 'src/core/dto/base.dto';
+import { BaseReqDto } from 'src/core/dto/base.dto';
 
 export class FileDto {
   data: any;
@@ -15,7 +15,7 @@ export class FileDto {
   limit: any;
 }
 
-export class CreateUserReqDto extends BaseDto {
+export class CreateUserReqDto extends BaseReqDto {
   //@MaxLength(20)
   //@IsString()
   //code: string;

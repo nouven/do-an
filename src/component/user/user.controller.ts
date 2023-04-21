@@ -15,7 +15,7 @@ import { CreateUserReqDto } from './dto/request/create-user.req.dto';
 import { UserServiceInterface } from './interface/user.service.interface';
 import { isEmpty } from 'lodash';
 import { AuthGuard } from 'src/core/guard/verify-token.guard';
-import { BaseDto } from 'src/core/dto/base.dto';
+import { BaseReqDto } from 'src/core/dto/base.dto';
 
 @Controller('users')
 export class UserController {

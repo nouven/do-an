@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
-import { BaseDto } from 'src/core/dto/base.dto';
+import { BaseReqDto } from 'src/core/dto/base.dto';
 
-export class LoginReqDto extends BaseDto {
+export class LoginReqDto extends BaseReqDto {
   @IsString()
   username: string;
 

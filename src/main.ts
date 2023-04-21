@@ -18,6 +18,7 @@ async function bootstrap() {
     AppModule,
     fastifyAdapter,
   );
+  app.enableCors();
   app.setGlobalPrefix('/api/v1');
   //app.useGlobalPipes(new ValidationPipe()),
   await app.listen(process.env.PORT || 3000);

@@ -24,8 +24,6 @@ export class UserRepository
     userEntity.name = data.name;
     userEntity.code = data.code;
     userEntity.email = data.email;
-    userEntity.dateOfBirth = data.dateOfBirth;
-    userEntity.phone = data.phone;
     userEntity.status = data.status;
 
     return userEntity;

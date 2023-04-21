@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { BaseDto } from 'src/core/dto/base.dto';
+import { BaseReqDto } from 'src/core/dto/base.dto';
 
 export class FileDto {
   data: any;
@@ -9,7 +9,7 @@ export class FileDto {
   limit: any;
 }
 
-export class UploadFileReqDto extends BaseDto {
+export class UploadFileReqDto extends BaseReqDto {
   @Type(() => FileDto)
   files: FileDto;
 }

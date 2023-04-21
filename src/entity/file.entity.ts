@@ -1,18 +1,24 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { KeyEntity } from './key.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('files')
-export class UserEntity {
+export class FileEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({})
-  fileName: string;
+  name: string;
 
   @Column({
-    type: 'varchar',
-    unique: true,
+    type: 'int',
   })
-  code: string;
+  createdBy: number;
+
+  @Column({
+    type: 'int',
+  })
+  keyId: number;
 
   @Column({})
   updatedAt: string;
@@ -22,4 +28,10 @@ export class UserEntity {
 
   @Column({})
   deletedAt: string;
+
+  //@ManyToOne(() => UserEntity, (user) => user.files)
+  //user?: UserEntity;
+
+  //@ManyToOne(() => KeyEntity, (key) => key.files)
+  //key?: KeyEntity;
 }

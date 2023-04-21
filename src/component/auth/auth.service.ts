@@ -32,10 +32,16 @@ export class AuthService implements AuthServiceInterface {
     };
 
     const token = sign(payload, process.env.ACCESS_TOKEN_KEY, {
-      expiresIn: '1d',
+      expiresIn: '7d',
     });
 
-    return new ResponseBuilder(token)
+    return new ResponseBuilder({ accessToken: token, user: payload })
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
+  }
+
+  async verifyToken(req: any): Promise<any> {
+    return new ResponseBuilder({ user: req.user })
       .withCode(ResponseCodeEnum.SUCCESS)
       .build();
   }

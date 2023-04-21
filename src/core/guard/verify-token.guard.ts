@@ -14,13 +14,13 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }
-
-    console.log('<============>   ', request);
     try {
       const payload = await verify(token, process.env.ACCESS_TOKEN_KEY);
+
       if (request.method === 'GET') {
         request.query['user'] = payload;
       } else {

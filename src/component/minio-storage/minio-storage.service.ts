@@ -11,6 +11,8 @@ import { reject } from 'lodash';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { GetFileURLReqDto } from '../file/dto/request/get-file-url.req.dto';
+import { ResponsePayload } from 'src/utils/response-payload';
+import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 
 @Injectable()
 export class MinioStorageService implements MinioStorageServiceInterface {
@@ -28,16 +30,33 @@ export class MinioStorageService implements MinioStorageServiceInterface {
     this.createBucketIfNotExists();
   }
 
-  async uplaod(req: UploadFileReqDto): Promise<any> {
-    const file = req.files[0] as FileDto;
+  async upload(req: FileDto): Promise<any> {
+    const file = req;
     const metaData: ItemBucketMetadata = { MimeType: file.mimetype };
-    const data = await this.minioClient.putObject(
-      this.bucketName,
-      file.filename,
-      file.data,
-      metaData,
+    const minioRes: ResponsePayload<any> = await new Promise(
+      (resolve, reject) => {
+        this.minioClient.putObject(
+          this.bucketName,
+          file.filename,
+          file.data,
+          file.data.length,
+          metaData,
+          (err, objInfo) => {
+            if (err) {
+              resolve({
+                data: err,
+                statusCode: ResponseCodeEnum.BAD_REQUEST,
+              } as ResponsePayload<any>);
+            }
+            resolve({
+              data: objInfo,
+              statusCode: ResponseCodeEnum.SUCCESS,
+            } as ResponsePayload<any>);
+          },
+        );
+      },
     );
-    return new ResponseBuilder(data).withCode(ResponseCodeEnum.SUCCESS);
+    return minioRes;
   }
 
   async createBucketIfNotExists() {
@@ -61,19 +80,56 @@ export class MinioStorageService implements MinioStorageServiceInterface {
     return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
   }
 
-  async getList(): Promise<any> {
-    const data = await new Promise((resolve, reject) => {
-      const data: any = [];
-      const objectsStream = this.minioClient.listObjects(this.bucketName);
+  public async getObject(fileName: string): Promise<any> {
+    const minioRes = await new Promise((resolve, reject) => {
+      let size = 0;
+      this.minioClient.getObject(
+        this.bucketName,
+        fileName,
+        function(err, dataStream) {
+          if (err) {
+            return console.log(err);
+          }
+          dataStream.on('data', function(chunk) {
+            size += chunk.length;
+          });
+          dataStream.on('end', function() {
+            resolve(size);
+          });
+          dataStream.on('error', function(err) {
+            reject('error');
+          });
+        },
+      );
+    });
 
+    return minioRes;
+  }
+
+  async getList(): Promise<any> {
+    const minioRes = await new Promise((resolve, reject) => {
+      const data: any = [];
+      const objectsStream = this.minioClient.listObjects(this.bucketName, '');
       objectsStream.on('data', function(obj) {
         data.push(obj);
       });
+
+      objectsStream.on('error', function(err) {
+        resolve({
+          data: err,
+          statusCode: ResponseCodeEnum.BAD_REQUEST,
+        } as ResponsePayload<any>);
+      });
+
       objectsStream.on('end', function() {
-        resolve(data);
+        resolve({
+          data,
+          statusCode: ResponseCodeEnum.BAD_REQUEST,
+        } as ResponsePayload<any>);
       });
     });
-    return new ResponseBuilder(data).withCode(ResponseCodeEnum.SUCCESS);
+
+    return minioRes;
   }
 
   async fGetObject(): Promise<any> {
