@@ -1,5 +1,11 @@
+import { Transform } from 'class-transformer';
 import { IsNumber } from 'class-validator';
 import { BaseReqDto } from './base.dto';
+
+class FilterReq {
+  column: string;
+  text: string;
+}
 
 export class BaseQueryReqDto extends BaseReqDto {
   @IsNumber()
@@ -12,6 +18,15 @@ export class BaseQueryReqDto extends BaseReqDto {
   skip?: number;
 
   limit: number;
+
+  @Transform(({ value, key }) => {
+    try {
+      return JSON.parse(`${value}`);
+    } catch (err) {
+      return [];
+    }
+  })
+  filter?: FilterReq[];
 
   constructor() {
     super();

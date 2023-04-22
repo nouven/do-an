@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { extend } from 'lodash';
+import { extend, isEmpty } from 'lodash';
 import { GetFileListReqDto } from 'src/component/file/dto/request/get-file-list.req.dto';
 import { FileRepositoryInterface } from 'src/component/file/interface/file.repository.interface';
 import { BaseAbstractRepository } from 'src/core/repository/base.abstract.repository';
@@ -52,7 +52,7 @@ export class FileRepository
   }
 
   async getList(req: GetFileListReqDto): Promise<any> {
-    const { take, skip } = req;
+    const { filter, take, skip } = req;
     const query = this.fileRepository
       .createQueryBuilder('f')
       .select([
@@ -71,6 +71,17 @@ export class FileRepository
       .groupBy('f.id')
       .addGroupBy('u.id')
       .addOrderBy('f.id', 'DESC');
+    if (!isEmpty(filter)) {
+      filter.forEach((i) => {
+        switch (i.column) {
+          case 'name':
+            query.where('f.name ILIKE :name', { name: `%${i.text}%` });
+            break;
+          default:
+            break;
+        }
+      });
+    }
 
     const data = await query.limit(take).offset(skip).getRawMany();
     const count = await query.getCount();

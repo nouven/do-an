@@ -12,7 +12,6 @@ import { ResponseBuilder } from 'src/utils/response-builder';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { GetFileURLReqDto } from '../file/dto/request/get-file-url.req.dto';
 import { ResponsePayload } from 'src/utils/response-payload';
-import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 
 @Injectable()
 export class MinioStorageService implements MinioStorageServiceInterface {
@@ -43,7 +42,7 @@ export class MinioStorageService implements MinioStorageServiceInterface {
           metaData,
           (err, objInfo) => {
             if (err) {
-              resolve({
+              reject({
                 data: err,
                 statusCode: ResponseCodeEnum.BAD_REQUEST,
               } as ResponsePayload<any>);
@@ -66,13 +65,45 @@ export class MinioStorageService implements MinioStorageServiceInterface {
     }
   }
 
-  async getFileUrl(req: GetFileURLReqDto) {
-    const { fileName } = req;
-    return await this.minioClient.presignedUrl(
-      'GET',
-      this.bucketName,
-      fileName,
-    );
+  public async removeObject(fileName: string): Promise<any> {
+    const minioRes = new Promise((resolve, reject) => {
+      this.minioClient.removeObject(this.bucketName, fileName, function(err) {
+        if (err) {
+          reject({
+            data: err,
+            statusCode: ResponseCodeEnum.BAD_REQUEST,
+          } as ResponsePayload<any>);
+        }
+        resolve({
+          statusCode: ResponseCodeEnum.SUCCESS,
+        } as ResponsePayload<any>);
+      });
+    });
+    return minioRes;
+  }
+
+  async getFileUrl(fileName: string) {
+    const minioRes = await new Promise((resolve, reject) => {
+      this.minioClient.presignedUrl(
+        'GET',
+        this.bucketName,
+        fileName,
+        function(err, presignedUrl) {
+          if (err) {
+            reject({
+              data: err,
+              statusCode: ResponseCodeEnum.BAD_REQUEST,
+            } as ResponsePayload<any>);
+          }
+
+          resolve({
+            data: { url: presignedUrl },
+            statusCode: ResponseCodeEnum.SUCCESS,
+          } as ResponsePayload<any>);
+        },
+      );
+    });
+    return minioRes;
   }
 
   async deleteFile(fileName: string) {

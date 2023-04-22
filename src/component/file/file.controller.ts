@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -38,6 +39,12 @@ export class FileController {
     return this.FileService.getDetail(id);
   }
 
+  @UseGuards(AuthGuard)
+  @Delete('/:id')
+  public async delete(@Param('id', new ParseIntPipe()) id: number) {
+    return this.FileService.delete(id);
+  }
+
   @Get('/list')
   public async getList(@Query() query: GetFileListReqDto) {
     const { request, responseError } = query;
@@ -47,12 +54,8 @@ export class FileController {
     return this.FileService.getList(request);
   }
 
-  @Get('')
-  public async getFileUrl(@Query() query: GetFileURLReqDto) {
-    const { request, responseError } = query;
-    if (!isEmpty(responseError)) {
-      return responseError;
-    }
-    return this.FileService.getFileUrl(request);
+  @Get('/file-url/:id')
+  public async getFileUrl(@Param('id', new ParseIntPipe()) id: number) {
+    return this.FileService.getFileUrl(id);
   }
 }

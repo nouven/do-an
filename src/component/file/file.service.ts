@@ -28,6 +28,7 @@ export class FileService implements FileServiceInterface {
 
   public async upload(req: UploadFileReqDto): Promise<any> {
     const file: FileDto = req.files[0];
+
     file.filename = await this.generateFileName(file.filename);
 
     const minioRes: ResponsePayload<any> =
@@ -44,7 +45,7 @@ export class FileService implements FileServiceInterface {
     });
     await this.fileRepository.create(fileEntity);
 
-    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
+    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
   }
 
   public async getDetail(id: number): Promise<any> {
@@ -58,7 +59,9 @@ export class FileService implements FileServiceInterface {
       },
     );
 
-    return new ResponseBuilder(resData).withCode(ResponseCodeEnum.SUCCESS);
+    return new ResponseBuilder(resData)
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
   }
 
   public async getList(req: GetFileListReqDto): Promise<any> {
@@ -67,13 +70,44 @@ export class FileService implements FileServiceInterface {
     const resData = plainToInstance(GetFileListResDto, data, {
       excludeExtraneousValues: true,
     });
-    return new ResponseBuilder({ items: data, count }).withCode(
-      ResponseCodeEnum.SUCCESS,
-    );
+    return new ResponseBuilder({ items: resData, count })
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
   }
 
-  public async getFileUrl(req: GetFileURLReqDto): Promise<any> {
-    return this.minioStorageService.getFileUrl(req);
+  public async delete(id: number): Promise<any> {
+    console.log('<============>   ', id);
+    return id;
+
+    const data = await this.fileRepository.findOneById(id);
+    if (isEmpty(data)) {
+      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND).build();
+    }
+
+    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+
+    try {
+      const minioRes: ResponsePayload<any> =
+        await this.minioStorageService.removeObject(data.name);
+      if (minioRes.statusCode !== ResponseCodeEnum.SUCCESS) {
+        throw new Error();
+      }
+      await this.fileRepository.remove(id);
+      return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+    } catch (err) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
+        .build();
+    }
+  }
+
+  public async getFileUrl(id: number): Promise<any> {
+    const data = await this.fileRepository.findOneById(id);
+    if (isEmpty(data)) {
+      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND).build();
+    }
+    const minioRes = await this.minioStorageService.getFileUrl(data.name);
+    return minioRes;
   }
 
   private async generateFileName(fileName: string): Promise<string> {

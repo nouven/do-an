@@ -6,7 +6,8 @@ export interface FileServiceInterface {
   upload(req: UploadFileReqDto): Promise<any>;
   getList(req: GetFileListReqDto): Promise<any>;
   getDetail(id: number): Promise<any>;
-  getFileUrl(req: GetFileURLReqDto): Promise<any>;
+  getFileUrl(id: number): Promise<any>;
+  delete(id: number): Promise<any>;
   readFromLatestPage(buffer: Buffer): Promise<any>;
   write2LatestPage(signature: string, buffer: Buffer): Promise<any>;
   removeLatestPage(buffer: Buffer): Promise<any>;

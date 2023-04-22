@@ -22,8 +22,14 @@ export class AuthGuard implements CanActivate {
       const payload = await verify(token, process.env.ACCESS_TOKEN_KEY);
 
       if (request.method === 'GET') {
+        if (!request.query) {
+          request.query = {};
+        }
         request.query['user'] = payload;
       } else {
+        if (!request.body) {
+          request.body = {};
+        }
         request.body['user'] = payload;
       }
     } catch (err) {
