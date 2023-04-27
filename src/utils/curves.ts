@@ -1,27 +1,26 @@
 export const p256 = {
   type: 'short',
   prime: null,
-  p: 'ffffffff 00000001 00000000 00000000 00000000 ffffffff ffffffff ffffffff',
-  a: 'ffffffff 00000001 00000000 00000000 00000000 ffffffff ffffffff fffffffc',
-  b: '5ac635d8 aa3a93e7 b3ebbd55 769886bc 651d06b0 cc53b0f6 3bce3c3e 27d2604b',
-  n: 'ffffffff 00000000 ffffffff ffffffff bce6faad a7179e84 f3b9cac2 fc632551',
-  hash: '',
+  p: 'ffffffff00000001000000000000000000000000ffffffffffffffffffffffff',
+  a: 'ffffffff00000001000000000000000000000000fffffffffffffffffffffffc',
+  b: '5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b',
+  n: 'ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551',
+  h: '01',
   gRed: false,
-  g: [
-    '6b17d1f2 e12c4247 f8bce6e5 63a440f2 77037d81 2deb33a0 f4a13945 d898c296',
-    '4fe342e2 fe1a7f9b 8ee7eb4a 7c0f9e16 2bce3357 6b315ece cbb64068 37bf51f5',
+  G: [
+    '6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296',
+    '4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5',
   ],
 };
 
 export const secp256k1 = {
   type: 'short',
   prime: 'k256',
-  p: 'ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffe fffffc2f',
-  a: '0',
-  b: '7',
-  n: 'ffffffff ffffffff ffffffff fffffffe baaedce6 af48a03b bfd25e8c d0364141',
-  h: '1',
-  hash: '',
+  p: 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f',
+  a: '00',
+  b: '07',
+  n: 'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+  h: '01',
   // Precomputed endomorphism
   beta: '7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee',
   lambda: '5363ad4cc05c30e0a5261c028812645a122e22ea20816678df02967c1b23bd72',
@@ -37,7 +36,7 @@ export const secp256k1 = {
   ],
 
   gRed: false,
-  g: [
+  G: [
     '79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
     '483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8',
   ],
