@@ -8,7 +8,12 @@ import { FileService } from './file.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FileEntity]), MinioStorageModule],
-  exports: [],
+  exports: [
+    {
+      provide: 'FileServiceInterface',
+      useClass: FileService,
+    },
+  ],
   controllers: [FileController],
   providers: [
     {
