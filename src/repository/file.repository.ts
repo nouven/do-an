@@ -23,6 +23,7 @@ export class FileRepository
     fileEntity.createdBy = data.createdBy;
     fileEntity.keyId = data.keyId;
     fileEntity.name = data.name;
+    fileEntity.mimetype = data.mimetype;
 
     return fileEntity;
   }
