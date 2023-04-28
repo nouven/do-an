@@ -21,6 +21,9 @@ export class FileEntity {
   keyId: number;
 
   @Column({})
+  mimetype: string;
+
+  @Column({})
   updatedAt: string;
 
   @Column({})

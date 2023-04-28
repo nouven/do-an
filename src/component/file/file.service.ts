@@ -41,6 +41,7 @@ export class FileService implements FileServiceInterface {
 
     const fileEntity = this.fileRepository.createEntity({
       name: file.filename,
+      mimetype: file.mimetype,
       createdBy: req.user?.id,
     });
     await this.fileRepository.create(fileEntity);
@@ -48,9 +49,23 @@ export class FileService implements FileServiceInterface {
     return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
   }
 
+  public async update(file: FileDto, fileEntity): Promise<any> {
+    const minioRes: ResponsePayload<any> =
+      await this.minioStorageService.upload(file);
+    if (minioRes.statusCode !== ResponseCodeEnum.SUCCESS) {
+      return new ResponseBuilder()
+        .withCode(minioRes.statusCode)
+        .withMessage(ErrorMessageEnum.UPLOAD_FAILED);
+    }
+    try {
+      await this.fileRepository.create(fileEntity);
+    } catch (error) { }
+    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
+  }
+
   public async getDetail(id: number): Promise<any> {
     const file = await this.fileRepository.getDetail(id);
-    const size = await this.minioStorageService.getObject(file.name);
+    const { size, data } = await this.minioStorageService.getObject(file.name);
     const resData = plainToInstance(
       GetFileDetailResDto,
       { ...file, size },
@@ -62,6 +77,10 @@ export class FileService implements FileServiceInterface {
     return new ResponseBuilder(resData)
       .withCode(ResponseCodeEnum.SUCCESS)
       .build();
+  }
+
+  public async getObject(fileName: string): Promise<any> {
+    return await this.minioStorageService.getObject(fileName);
   }
 
   public async getList(req: GetFileListReqDto): Promise<any> {

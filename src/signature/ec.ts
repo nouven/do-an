@@ -1,6 +1,6 @@
-import bigi from 'bigi';
+import * as bigi from 'bigi';
 import { Curve, Point } from 'ecurve';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { p256, secp256k1 } from 'src/utils/curves';
 
 interface IPoint {
@@ -10,7 +10,9 @@ interface IPoint {
 }
 export class EC {
   private curve!: Curve;
+  public name: string;
   constructor(curve: string) {
+    this.name = curve;
     this.init(curve);
   }
   init(curve: string) {
@@ -78,9 +80,8 @@ export class EC {
     return Vx.equals(r);
   }
 }
-
-const m = bigi.fromHex('aabbccddee');
-const ec = new EC('secp256k1');
-const key = ec.generateKey();
-const signature = ec.sign(m, key.priv);
-const isValid = ec.verify(m, signature.r, signature.s, key.publ);
+//const m = bigi.fromHex('aabbccddee');
+//const ec = new EC('secp256k1');
+//const key = ec.generateKey();
+//const signature = ec.sign(m, key.priv);
+//const isValid = ec.verify(m, signature.r, signature.s, key.publ);

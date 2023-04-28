@@ -5,6 +5,9 @@ class UserResDto extends BaseResDto { }
 
 export class GetFileListResDto extends BaseResDto {
   @Expose()
+  mimetype: string;
+
+  @Expose()
   @Type(() => UserResDto)
   user: UserResDto;
 }
