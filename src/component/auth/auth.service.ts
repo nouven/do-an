@@ -29,6 +29,7 @@ export class AuthService implements AuthServiceInterface {
       id: user.id,
       code: user.code,
       email: user.email,
+      name: user.name,
     };
 
     const token = sign(payload, process.env.ACCESS_TOKEN_KEY, {

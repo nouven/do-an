@@ -3,9 +3,10 @@ export enum SignEnum {
   ENHANDCED_EC = 2,
 }
 
-export enum PrefixKeyCodeEnum {
-  STAND_EC = 'STAND_EC',
-  ENHANDCED_EC = 'ENHANDCED_EC',
+export enum cryptoTypeEnum {
+  EC = 'EC',
+  RSA = 'RSA',
 }
+export const cryptoTypes = [cryptoTypeEnum.EC, cryptoTypeEnum.RSA];
 
-export const SEPRCHAR = '**';
+export const SEPR_CHAR = '##';

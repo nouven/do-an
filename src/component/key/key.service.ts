@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrefixKeyCodeEnum, SignEnum } from 'src/constant';
+import { cryptoTypeEnum, SignEnum } from 'src/constant';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { CreateKeyReqDto } from './dto/create-key.req.dto';
@@ -29,10 +29,10 @@ export class KeyService implements KeyServiceInterface {
       id = (data.id + 1).toString();
     }
     if (type === SignEnum.STAND_EC) {
-      return `${PrefixKeyCodeEnum.STAND_EC}.${id.padStart(4, '0')}`;
+      return `${cryptoTypeEnum.EC}.${id.padStart(4, '0')}`;
     }
     if (type === SignEnum.ENHANDCED_EC) {
-      return `${PrefixKeyCodeEnum.ENHANDCED_EC}.${id.padStart(4, '0')}`;
+      return `${cryptoTypeEnum.EC}.${id.padStart(4, '0')}`;
     }
   }
 }

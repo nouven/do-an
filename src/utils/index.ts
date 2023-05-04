@@ -1,6 +1,6 @@
 import * as bigi from 'bigi';
 import { Point } from 'ecurve';
-import { SEPRCHAR } from 'src/constant';
+import { SEPR_CHAR } from 'src/constant';
 import * as crypto from 'crypto';
 
 function hexString2Hex(hexString: string) {
@@ -27,25 +27,43 @@ function buffer2HexString(buffer: Buffer) {
 export function bigis2Str(bigis: bigi[]) {
   let result = '';
   for (const i of bigis) {
-    result = result.concat(`${i.toString(16)}${SEPRCHAR}`);
+    result = result.concat(`${i.toString(16)}${SEPR_CHAR}`);
   }
   return result;
 }
 export function key2Json(curve: string, d: bigi, publ: Point) {
   return {
-    priv: `${curve}${SEPRCHAR}${d.toString(16)}`,
-    publ: `${curve}${SEPRCHAR}${bigis2Str([publ.x, publ.y, publ.z])}`,
+    priv: `${curve}${SEPR_CHAR}${d.toString(16)}`,
+    publ: `${curve}${SEPR_CHAR}${bigis2Str([publ.x, publ.y, publ.z])}`,
   };
 }
 
-export function deKey(str: string) {
-  const arr: any = str.split(SEPRCHAR);
+export function str2arr(str: string) {
+  const arr: any = str.split(SEPR_CHAR);
   for (let i = 1; i < arr.length; i++) {
     arr[i] = bigi.fromHex(arr[i]);
   }
   return arr;
 }
 
+export function sign2Str(curve: string, bigis: bigi[]) {
+  let result = `${curve}${SEPR_CHAR}`;
+  for (const i of bigis) {
+    result = result.concat(i.toString(16), SEPR_CHAR);
+  }
+  return result;
+}
+
 export function hash(buf: Buffer) {
   return crypto.createHash('sha256').update(buf).digest('hex');
+}
+
+export function str2Bigi(str: string): bigi {
+  let temp = '';
+  if (str.length % 2 === 1) {
+    temp = `0${str}`;
+  } else {
+    temp = str;
+  }
+  return bigi.fromHex(temp);
 }

@@ -1,9 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as bigi from 'bigi';
+import { Point } from 'ecurve';
 import { isEmpty } from 'lodash';
+import { cryptoTypeEnum, cryptoTypes, SEPR_CHAR } from 'src/constant';
+import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { EC } from 'src/signature/ec';
-import { deKey, hash, key2Json } from 'src/utils';
+import { RSA } from 'src/signature/rsa';
+import { str2arr, hash, key2Json, sign2Str } from 'src/utils';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { FileDto } from '../file/dto/request/upload-file.req.dto';
 import { FileRepositoryInterface } from '../file/interface/file.repository.interface';
@@ -12,10 +16,6 @@ import { GenerateKeyReqDto } from './dto/request/generate-key.request.dto';
 import { signReqDto } from './dto/request/sign.req.dto';
 import { verifyReqDto } from './dto/request/verify.req.dto';
 import { SignatureServiceInterface } from './interface/signature.service.interface';
-
-const priv = 'secp256k1**80b7643b397a76cfea31f851';
-const publ =
-  'secp256k1**92b7d35e77c5135ff59a29d5c250d57b679e2be2403a9c3024ed7f615e97784d**10699215940994f069226aabbffd5fb29f0eeaf62a8f72633200d7a4ebd2fc87**61ad0a1c00d08d528dadd31e308663fbb1478d22e6fbe85e545d9d2eedc236fc**';
 
 @Injectable()
 export class SignatureService implements SignatureServiceInterface {
@@ -28,31 +28,68 @@ export class SignatureService implements SignatureServiceInterface {
   ) { }
 
   public async generateKey(req: GenerateKeyReqDto): Promise<any> {
-    const ec = new EC('secp256k1');
-    const key = ec.generateKey();
-    const resKey = key2Json(ec.name, key.priv, key.publ);
-    return new ResponseBuilder(resKey).withCode(ResponseCodeEnum.SUCCESS);
+    //const ec = new EC();
+    //const key = ec.generateKey();
+    //const resKey = key2Json(ec.name, key.priv, key.publ);
+    //return new ResponseBuilder(resKey).withCode(ResponseCodeEnum.SUCCESS);
   }
 
   public async sign(id: number, req: signReqDto): Promise<any> {
-    const file = await this.fileRespository.findOneById(id);
-    if (isEmpty(file)) {
-      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND);
-    }
-
-    const { size, data } = await this.fileService.getObject(file.name);
-
-    const hashedData = hash(data);
-    const m = bigi.fromHex(hashedData);
-
-    const [curve, priv] = deKey(req.priv);
-    const ec = new EC(curve);
-    const signature = ec.sign(m, priv);
-
-    console.log('<<==========>>	', signature);
-
-    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
+    //const file = await this.fileRespository.findOneById(id);
+    //if (isEmpty(file)) {
+    //  return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND);
+    //}
+    //const { size, data } = await this.fileService.getObject(file.name);
+    //const hashedData = hash(data);
+    //console.log('<============>   sign: hasheddata :', hashedData);
+    //const m = bigi.fromHex(hashedData);
+    //const [curve, priv] = str2arr(req.priv);
+    //const ec = new EC(curve);
+    //let signature: any = ec.sign(m, priv);
+    //const publ = ec.getPublKey(priv);
+    //signature = sign2Str(ec.name, [
+    //  signature.r,
+    //  signature.s,
+    //  publ.x,
+    //  publ.y,
+    //  publ.z,
+    //]);
+    //const signedBytes = await this.fileService.write2LatestPage(
+    //  signature,
+    //  data,
+    //);
+    //const fileDto = new FileDto();
+    //fileDto.data = signedBytes;
+    //fileDto.filename = file.name;
+    //fileDto.mimetype = file.mimetype;
+    //file.isSigned = 1;
+    //await this.fileService.update(fileDto, file);
+    //return new ResponseBuilder(signature).withCode(ResponseCodeEnum.SUCCESS);
   }
 
-  public async verify(req: verifyReqDto): Promise<any> { }
+  public async verify(req: verifyReqDto): Promise<any> {
+    const file = req.files[0];
+    const uint8 = file.data;
+    const signature = await this.fileService.readSignature(uint8);
+    let result = false;
+
+    const [type] = signature.split(SEPR_CHAR);
+    if (type === cryptoTypeEnum.EC) {
+      const ec = new EC();
+      result = ec.verify(signature);
+    } else if (type === cryptoTypeEnum.RSA) {
+      const rsa = new RSA();
+      result = rsa.verify(signature);
+    } else {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE);
+    }
+    if (!result) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE);
+    }
+    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
+  }
 }

@@ -11,7 +11,7 @@ export interface FileServiceInterface {
   getObject(fileName): Promise<any>;
   getFileUrl(id: number): Promise<any>;
   delete(id: number): Promise<any>;
-  readFromLatestPage(buffer: Buffer): Promise<any>;
+  readSignature(buffer: Buffer): Promise<any>;
   write2LatestPage(signature: string, buffer: Buffer): Promise<any>;
   removeLatestPage(buffer: Buffer): Promise<any>;
 }

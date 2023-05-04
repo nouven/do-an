@@ -15,6 +15,8 @@ import { GetFileListResDto } from './dto/response/get-file-list.res.dto';
 import { GetFileDetailResDto } from './dto/response/get-file-detail.res.dto';
 import { PDFExtract } from 'pdf.js-extract';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { SEPR_CHAR } from 'src/constant';
+import fs from 'fs';
 
 @Injectable()
 export class FileService implements FileServiceInterface {
@@ -139,7 +141,8 @@ export class FileService implements FileServiceInterface {
     return name;
   }
 
-  public async readFromLatestPage(buffer: Buffer): Promise<any> {
+  public async readSignature(uint8: Uint8Array): Promise<any> {
+    const buffer = Buffer.from(uint8);
     const pdfExtract = new PDFExtract();
     const options = {}; /* see below */
     const content = await new Promise((resolve) => {
@@ -148,7 +151,7 @@ export class FileService implements FileServiceInterface {
         const pages = data.pages;
         const latestPage = pages[pages.length - 1];
         const content = latestPage.content.map((i) => i.str);
-        resolve(content);
+        resolve(content.join(''));
       });
     });
     return content;
@@ -160,16 +163,25 @@ export class FileService implements FileServiceInterface {
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
     const page = pdfDoc.addPage();
     const { width, height } = page.getSize();
-    const fontSize = 30;
-    page.drawText(signature, {
+    const fontSize = 14;
+    let result = '';
+    for (let i = 0; i < signature.length; i += 45) {
+      const temp = signature.slice(i, i + 45);
+      result = result.concat(`${temp}\n`);
+    }
+    page.drawText(result, {
       x: 50,
       y: height - 4 * fontSize,
       size: fontSize,
       font: timesRomanFont,
-      color: rgb(0, 0.53, 0.71),
     });
-    const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
+
+    const date = pdfDoc.getModificationDate();
+    console.log('<============>   date: ', date);
+    pdfDoc.setModificationDate(date);
+    let pdfBytes = await pdfDoc.save();
+
+    return Buffer.from(pdfBytes);
   }
 
   public async removeLatestPage(buffer: Buffer) {
@@ -177,7 +189,18 @@ export class FileService implements FileServiceInterface {
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
     pdfDoc.removePage(pages.length - 1);
+
+    const date = pdfDoc.getModificationDate();
+    console.log('<============>   date: ', date);
+    pdfDoc.setModificationDate(date);
     const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
+
+    const fileDto = new FileDto();
+    fileDto.data = Buffer.from(pdfBytes);
+    fileDto.filename = 'test-verify.pdf';
+    fileDto.mimetype = 'application/pdf';
+    this.minioStorageService.upload(fileDto);
+
+    return Buffer.from(pdfBytes);
   }
 }

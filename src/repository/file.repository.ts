@@ -24,6 +24,7 @@ export class FileRepository
     fileEntity.keyId = data.keyId;
     fileEntity.name = data.name;
     fileEntity.mimetype = data.mimetype;
+    fileEntity.isSigned = data.isSigned;
 
     return fileEntity;
   }

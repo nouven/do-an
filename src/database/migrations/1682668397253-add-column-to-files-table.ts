@@ -9,7 +9,7 @@ export class addColumnToFilesTable1682668397253 implements MigrationInterface {
         isNullable: true,
       }),
       new TableColumn({
-        name: 'isSigned',
+        name: 'is_signed',
         type: 'int',
         isNullable: true,
       }),
@@ -24,7 +24,7 @@ export class addColumnToFilesTable1682668397253 implements MigrationInterface {
         isNullable: true,
       }),
       new TableColumn({
-        name: 'isSigned',
+        name: 'is_signed',
         type: 'int',
         isNullable: true,
       }),

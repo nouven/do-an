@@ -114,7 +114,7 @@ export class MinioStorageService implements MinioStorageServiceInterface {
   public async getObject(fileName: string): Promise<any> {
     const minioRes = await new Promise((resolve, reject) => {
       let size = 0;
-      let data;
+      const chunks = [];
       this.minioClient.getObject(
         this.bucketName,
         fileName,
@@ -124,10 +124,10 @@ export class MinioStorageService implements MinioStorageServiceInterface {
           }
           dataStream.on('data', function(chunk) {
             size += chunk.length;
-            data += chunk;
+            chunks.push(chunk);
           });
           dataStream.on('end', function() {
-            resolve({ size, data });
+            resolve({ size, data: Buffer.concat(chunks) });
           });
           dataStream.on('error', function(err) {
             reject('error');

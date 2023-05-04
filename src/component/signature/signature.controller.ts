@@ -44,7 +44,6 @@ export class SignatureController {
     return await this.signatureService.sign(id, request);
   }
 
-  @UseGuards(AuthGuard)
   @Post('/verify')
   public async verify(@Body() body: verifyReqDto) {
     const { request, responseError } = body;
