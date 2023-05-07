@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { AuthGuard } from 'src/core/guard/verify-token.guard';
+import { DecryptReqDto } from './dto/request/decrypt.req.dto';
+import { EncryptReqDto } from './dto/request/encrypt.req.dto';
 import { GenerateKeyReqDto } from './dto/request/generate-key.request.dto';
-import { signReqDto } from './dto/request/sign.req.dto';
-import { verifyReqDto } from './dto/request/verify.req.dto';
+import { SignReqDto } from './dto/request/sign.req.dto';
+import { VerifyReqDto } from './dto/request/verify.req.dto';
 import { SignatureServiceInterface } from './interface/signature.service.interface';
 
 @Controller('signatures')
@@ -35,7 +37,7 @@ export class SignatureController {
   @Post('/sign/:id')
   public async sign(
     @Param('id', new ParseIntPipe()) id,
-    @Body() body: signReqDto,
+    @Body() body: SignReqDto,
   ) {
     const { request, responseError } = body;
     if (!isEmpty(responseError)) {
@@ -45,11 +47,29 @@ export class SignatureController {
   }
 
   @Post('/verify')
-  public async verify(@Body() body: verifyReqDto) {
+  public async verify(@Body() body: VerifyReqDto) {
     const { request, responseError } = body;
     if (!isEmpty(responseError)) {
       return responseError;
     }
     return await this.signatureService.verify(request);
+  }
+
+  @Post('/encrypt')
+  public async encrypt(@Body() body: EncryptReqDto) {
+    const { request, responseError } = body;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.signatureService.encrypt(request);
+  }
+
+  @Post('/decrypt')
+  public async decrypt(@Body() body: DecryptReqDto) {
+    const { request, responseError } = body;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.signatureService.decrypt(request);
   }
 }

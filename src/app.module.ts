@@ -12,7 +12,6 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AuthModule } from './component/auth/auth.module';
 import { FileModule } from './component/file/file.module';
 import { FirebaseModule } from 'nestjs-firebase';
-import { StorageModule } from './component/storage/storage.module';
 import { MinioStorageModule } from './component/minio-storage/minio-storage.module';
 import { KeyModule } from './component/key/key.module';
 import { SignatureModule } from './component/signature/signature.module';

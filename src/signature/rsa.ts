@@ -82,8 +82,8 @@ export class RSA {
         16,
       )}${SEPR_CHAR}${this.e.toString(16)}${SEPR_CHAR}${this.n.toString(16)}`;
   }
-  public verify(signatrue: string) {
-    const [type, hashedMsg, s, e, n] = signatrue.split(SEPR_CHAR);
+  public verify(signatrue: string, hashedMsg) {
+    const [type, prevHashedMsg, s, e, n] = signatrue.split(SEPR_CHAR);
     this.e = bigInt(e, 16);
     this.n = bigInt(n, 16);
     const m = bigInt(hashedMsg, 16);

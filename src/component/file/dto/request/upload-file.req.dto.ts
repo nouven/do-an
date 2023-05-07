@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { BaseReqDto } from 'src/core/dto/base.dto';
 
 export class FileDto {
-  data: any;
+  data: Buffer;
   filename: any;
   encoding: any;
   mimetype: any;

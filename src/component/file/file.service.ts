@@ -38,7 +38,8 @@ export class FileService implements FileServiceInterface {
     if (minioRes.statusCode !== ResponseCodeEnum.SUCCESS) {
       return new ResponseBuilder()
         .withCode(minioRes.statusCode)
-        .withMessage(ErrorMessageEnum.UPLOAD_FAILED);
+        .withMessage(ErrorMessageEnum.UPLOAD_FAILED)
+        .build();
     }
 
     const fileEntity = this.fileRepository.createEntity({
@@ -97,8 +98,7 @@ export class FileService implements FileServiceInterface {
   }
 
   public async delete(id: number): Promise<any> {
-    console.log('<============>   ', id);
-    return id;
+    return new ResponseBuilder(id).withCode(ResponseCodeEnum.SUCCESS).build();
 
     const data = await this.fileRepository.findOneById(id);
     if (isEmpty(data)) {

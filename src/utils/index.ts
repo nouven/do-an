@@ -67,3 +67,11 @@ export function str2Bigi(str: string): bigi {
   }
   return bigi.fromHex(temp);
 }
+
+export function removePad(buffer: Buffer): Buffer {
+  let i = buffer.length - 1;
+  while (i >= 0 && buffer[i] === 0) {
+    i--;
+  }
+  return buffer.slice(0, i + 1);
+}

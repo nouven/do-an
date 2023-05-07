@@ -90,9 +90,9 @@ export class EC {
     )}`;
   }
 
-  public verify(signature: string) {
-    const [e1, e2, e3, e4, e5, e6, e7] = signature.split(SEPR_CHAR);
-    const m = str2Bigi(e2);
+  public verify(signature: string, hashedMsg: string) {
+    const [e1, prevHashedMsg, e3, e4, e5, e6, e7] = signature.split(SEPR_CHAR);
+    const m = str2Bigi(hashedMsg);
     const r = str2Bigi(e3);
     const s = str2Bigi(e4);
 
