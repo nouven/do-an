@@ -54,7 +54,8 @@ export class FileRepository
   }
 
   async getList(req: GetFileListReqDto): Promise<any> {
-    const { filter, take, skip } = req;
+    const { filter, take, skip, user } = req;
+
     const query = this.fileRepository
       .createQueryBuilder('f')
       .select([
@@ -70,6 +71,9 @@ export class FileRepository
           )END as "user"`,
       ])
       .innerJoin('users', 'u', 'f.created_by = u.id')
+      .where('u.id = :id', {
+        id: user?.id,
+      })
       .groupBy('f.id')
       .addGroupBy('u.id')
       .addOrderBy('f.id', 'DESC');

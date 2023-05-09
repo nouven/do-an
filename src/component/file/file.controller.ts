@@ -45,6 +45,7 @@ export class FileController {
     return this.FileService.delete(id);
   }
 
+  @UseGuards(AuthGuard)
   @Get('/list')
   public async getList(@Query() query: GetFileListReqDto) {
     const { request, responseError } = query;

@@ -7,5 +7,6 @@ export enum ErrorMessageEnum {
   SUCCESS = 'Success',
   TOKEN_EXPIRED = 'Token expired',
   UPLOAD_FAILED = 'upload failed',
-  INVALID_SIGNATURE = 'signature is invalid',
+  INVALID_SIGNATURE = 'Signature is invalid',
+  VALID_SIGNATURE = 'Signature is valid',
 }

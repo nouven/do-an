@@ -104,7 +104,10 @@ export class SignatureService implements SignatureServiceInterface {
         .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
         .build();
     }
-    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+    return new ResponseBuilder()
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .withMessage(ErrorMessageEnum.VALID_SIGNATURE)
+      .build();
   }
 
   public async encrypt(req: EncryptReqDto): Promise<any> {
