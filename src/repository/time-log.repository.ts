@@ -21,23 +21,37 @@ export class TimeLogRepository
     const timeLogEntity = new TimeLogEntity();
     timeLogEntity.startedAt = data.startedAt;
     timeLogEntity.endedAt = data.endedAt;
-    timeLogEntity.type = data.type;
+    timeLogEntity.action = data.action;
+    timeLogEntity.cryptoType = data.cryptoType;
     return timeLogEntity;
   }
 
   async getList(req: GetTimeLogListReqDto): Promise<any> {
-    const { skip, take } = req;
+    const { skip, take, filter } = req;
     const query = this.timeLogRepository
       .createQueryBuilder('tl')
       .select([
         'tl.started_at as "startedAt"',
         'tl.ended_at as "endedAt"',
-        'tl.type as "type"',
+        'tl.action as "action"',
+        'tl.cryptoType as "cryptoType"',
       ])
       .orderBy('tl.created_at', 'DESC');
 
+    if (filter) {
+      filter.forEach((i) => {
+        switch (i.column) {
+          case 'action':
+            query.where('tl.action LIKE :action', { action: i.text });
+            break;
+          default:
+            break;
+        }
+      });
+    }
+
     const data = await query
-      .limit(take * 2)
+      .limit(take * 4)
       .offset(skip)
       .getRawMany();
 

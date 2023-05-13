@@ -25,7 +25,12 @@ export class createTableTimeLogs1683728936683 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'type',
+            name: 'action',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'crypto_type',
             type: 'varchar',
             isNullable: true,
           },

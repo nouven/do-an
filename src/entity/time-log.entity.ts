@@ -12,7 +12,10 @@ export class TimeLogEntity {
   endedAt: string;
 
   @Column({})
-  type: string;
+  action: string;
+
+  @Column({})
+  cryptoType: string;
 
   @Column({})
   updatedAt: string;

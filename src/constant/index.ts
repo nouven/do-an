@@ -7,6 +7,12 @@ export enum cryptoTypeEnum {
   EC = 'EC',
   RSA = 'RSA',
 }
+
+export enum actionEnum {
+  SIGN = 'SIGN',
+  GENERATE_KEY = 'GENERATE_KEY',
+}
+
 export const cryptoTypes = [cryptoTypeEnum.EC, cryptoTypeEnum.RSA];
 
 export const SEPR_CHAR = '##';
