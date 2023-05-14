@@ -48,8 +48,6 @@ export class TimeLogService implements TimeLogServiceInterface {
       signLogTimes: this.generateResponse(signLogTimes),
     };
 
-    console.log('<============>   ', resData);
-
     return new ResponseBuilder(resData)
       .withCode(ResponseCodeEnum.SUCCESS)
       .build();

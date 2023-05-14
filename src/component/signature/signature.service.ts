@@ -11,8 +11,7 @@ import {
 } from 'src/constant';
 import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
-import { EC } from 'src/signature/ec';
-import { RSA } from 'src/signature/rsa';
+import { RSA } from 'src/feature/rsa/rsa';
 import { str2arr, hash, key2Json, sign2Str, removePad } from 'src/utils';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { FileDto } from '../file/dto/request/upload-file.req.dto';
@@ -25,6 +24,7 @@ import { SignReqDto } from './dto/request/sign.req.dto';
 import { VerifyReqDto } from './dto/request/verify.req.dto';
 import { SignatureServiceInterface } from './interface/signature.service.interface';
 import * as crypto from 'crypto';
+import { EC } from 'src/feature/ec/ec-1';
 
 @Injectable()
 export class SignatureService implements SignatureServiceInterface {
@@ -114,6 +114,8 @@ export class SignatureService implements SignatureServiceInterface {
     const file = req.files[0];
     const buffer = file.data;
 
+    console.log('<============>   buffer', buffer);
+
     const iv = crypto.randomBytes(16);
     const key = crypto
       .createHash('sha256')
@@ -145,6 +147,7 @@ export class SignatureService implements SignatureServiceInterface {
     const decipher = crypto.createDecipheriv(AES_ALGORITHM, key, iv);
 
     const result = Buffer.concat([decipher.update(cipher), decipher.final()]);
+    console.log('<============>   result:', result);
     return new ResponseBuilder(result)
       .withCode(ResponseCodeEnum.SUCCESS)
       .build();
