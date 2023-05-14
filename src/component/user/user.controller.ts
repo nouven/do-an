@@ -31,6 +31,7 @@ export class UserController {
 
   @Post('create')
   public async create(@Body() body: CreateUserReqDto) {
+    console.log('<============>   ', 'break');
     const { request, responseError } = body;
     if (!isEmpty(responseError)) {
       return responseError;

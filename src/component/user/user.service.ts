@@ -40,7 +40,9 @@ export class UserService implements UserServiceInterface {
       excludeExtraneousValues: true,
     });
 
-    return new ResponseBuilder(resData).withCode(ResponseCodeEnum.SUCCESS);
+    return new ResponseBuilder(resData)
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
   }
 
   public async getDetail(id: number): Promise<any> {

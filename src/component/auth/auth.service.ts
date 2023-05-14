@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
+import { isEmpty } from 'lodash';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { UserRepositoryInterface } from '../user/interface/user.respository.interface';
@@ -19,10 +20,17 @@ export class AuthService implements AuthServiceInterface {
     const user = await this.userRepository.findOneByCondition({
       username,
     });
+
+    if (isEmpty(user)) {
+      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND).build();
+    }
+
     const isMatching = await compare(password, user.password);
 
     if (!isMatching) {
-      return new ResponseBuilder().withCode(ResponseCodeEnum.UNAUTHORIZED);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.UNAUTHORIZED)
+        .build();
     }
 
     const payload = {
