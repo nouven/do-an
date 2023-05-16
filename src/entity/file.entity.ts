@@ -24,6 +24,9 @@ export class FileEntity {
   mimetype: string;
 
   @Column({})
+  isShared: boolean;
+
+  @Column({})
   isSigned: number;
 
   @Column({})

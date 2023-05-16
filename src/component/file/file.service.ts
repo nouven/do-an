@@ -17,6 +17,7 @@ import { PDFExtract } from 'pdf.js-extract';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { SEPR_CHAR } from 'src/constant';
 import fs from 'fs';
+import { UpdateFileReqDto } from './dto/request/update-file.req.dto';
 
 @Injectable()
 export class FileService implements FileServiceInterface {
@@ -52,18 +53,21 @@ export class FileService implements FileServiceInterface {
     return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
   }
 
-  public async update(file: FileDto, fileEntity): Promise<any> {
-    const minioRes: ResponsePayload<any> =
-      await this.minioStorageService.upload(file);
-    if (minioRes.statusCode !== ResponseCodeEnum.SUCCESS) {
-      return new ResponseBuilder()
-        .withCode(minioRes.statusCode)
-        .withMessage(ErrorMessageEnum.UPLOAD_FAILED);
+  public async update(req: UpdateFileReqDto): Promise<any> {
+    const { id, isShared } = req;
+    const data = await this.fileRepository.findOneById(id);
+    if (isEmpty(data)) {
+      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND).build();
     }
     try {
-      await this.fileRepository.create(fileEntity);
-    } catch (error) { }
-    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS);
+      data.isShared = isShared;
+      await this.fileRepository.update(data);
+      return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+    } catch (error) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
+        .build();
+    }
   }
 
   public async getDetail(id: number): Promise<any> {

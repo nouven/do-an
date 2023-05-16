@@ -25,6 +25,7 @@ export class FileRepository
     fileEntity.name = data.name;
     fileEntity.mimetype = data.mimetype;
     fileEntity.isSigned = data.isSigned;
+    fileEntity.isShared = data.isShared;
 
     return fileEntity;
   }
@@ -61,6 +62,7 @@ export class FileRepository
       .select([
         'f.id as "id"',
         'f.name as "name"',
+        'f.is_shared as "isShared"',
         'f.created_at as "createdAt"',
         'f.updated_at as "updatedAt"',
         `CASE WHEN count(u) = 0 THEN '{}'
@@ -71,9 +73,6 @@ export class FileRepository
           )END as "user"`,
       ])
       .innerJoin('users', 'u', 'f.created_by = u.id')
-      .where('u.id = :id', {
-        id: user?.id,
-      })
       .groupBy('f.id')
       .addGroupBy('u.id')
       .addOrderBy('f.id', 'DESC');
@@ -82,6 +81,18 @@ export class FileRepository
         switch (i.column) {
           case 'name':
             query.where('f.name ILIKE :name', { name: `%${i.text}%` });
+            break;
+          case 'isShared':
+            const isShared = i.text === 'true';
+            if (!isShared) {
+              query.where('u.id = :id', {
+                id: user?.id,
+              });
+            } else {
+              query.where('f.is_shared = :isShared', {
+                isShared: i.text === 'true',
+              });
+            }
             break;
           default:
             break;

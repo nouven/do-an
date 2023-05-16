@@ -112,16 +112,14 @@ export class SignatureService implements SignatureServiceInterface {
 
   public async encrypt(req: EncryptReqDto): Promise<any> {
     const file = req.files[0];
+    const key = req.key;
     const buffer = file.data;
-
-    console.log('<============>   buffer', buffer);
-
     const iv = crypto.randomBytes(16);
-    const key = crypto
-      .createHash('sha256')
-      .update('nouven')
-      .digest('hex')
-      .substring(0, 32);
+    //const key = crypto
+    //  .createHash('sha256')
+    //  .update('nouven')
+    //  .digest('hex')
+    //  .substring(0, 32);
 
     const cipher = crypto.createCipheriv(AES_ALGORITHM, key, iv);
     const result = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
@@ -132,14 +130,15 @@ export class SignatureService implements SignatureServiceInterface {
   }
   public async decrypt(req: DecryptReqDto): Promise<any> {
     const file = req.files[0];
+    const key = req.key;
     const buffer = file.data;
 
     const iv = buffer.slice(0, 16);
-    const key = crypto
-      .createHash('sha256')
-      .update('nouven')
-      .digest('hex')
-      .substring(0, 32);
+    //const key = crypto
+    //  .createHash('sha256')
+    //  .update('nouven')
+    //  .digest('hex')
+    //  .substring(0, 32);
 
     const signature = removePad(buffer.slice(-SIGNTURE_SIZE));
 
@@ -147,7 +146,6 @@ export class SignatureService implements SignatureServiceInterface {
     const decipher = crypto.createDecipheriv(AES_ALGORITHM, key, iv);
 
     const result = Buffer.concat([decipher.update(cipher), decipher.final()]);
-    console.log('<============>   result:', result);
     return new ResponseBuilder(result)
       .withCode(ResponseCodeEnum.SUCCESS)
       .build();

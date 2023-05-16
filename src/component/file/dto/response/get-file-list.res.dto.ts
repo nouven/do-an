@@ -8,6 +8,9 @@ export class GetFileListResDto extends BaseResDto {
   mimetype: string;
 
   @Expose()
+  isShared: boolean;
+
+  @Expose()
   @Type(() => UserResDto)
   user: UserResDto;
 }

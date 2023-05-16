@@ -44,6 +44,11 @@ export class TimeLogRepository
           case 'action':
             query.where('tl.action LIKE :action', { action: i.text });
             break;
+          case 'cryptoType':
+            query.andWhere('(tl.cryptoType LIKE :cryptoType)', {
+              cryptoType: i.text,
+            });
+            break;
           default:
             break;
         }
@@ -51,7 +56,7 @@ export class TimeLogRepository
     }
 
     const data = await query
-      .limit(take * 4)
+      .limit(take * 2)
       .offset(skip)
       .getRawMany();
 

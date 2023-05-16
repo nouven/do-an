@@ -23,7 +23,7 @@ export class KeyRepository
     keyEntity.publ = data.publ;
     keyEntity.type = data.type;
     keyEntity.createdBy = data.createdBy;
-    return entity;
+    return keyEntity;
   }
 
   public async getLatestId() {

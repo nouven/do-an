@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { cryptoTypeEnum, SignEnum } from 'src/constant';
+import { cryptoTypeEnum, SEPR_CHAR } from 'src/constant';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { CreateKeyReqDto } from './dto/create-key.req.dto';
@@ -13,26 +13,29 @@ export class KeyService implements KeyServiceInterface {
     private readonly keyRepository: KeyRepositoryInterface,
   ) { }
   public async create(req: CreateKeyReqDto): Promise<any> {
-    const { type } = req;
+    const { key } = req;
     const { id } = req.user;
-    const code = await this.generateCode(type);
-    //handle generate key
+    const [type] = key.split(SEPR_CHAR);
 
+    const code = await this.generateCode(type);
+
+    const keyEntity = this.keyRepository.createEntity({
+      code,
+      type,
+      publ: key,
+      createdBy: id,
+    });
     //handle save key
-    return new ResponseBuilder({ code }).withCode(ResponseCodeEnum.SUCCESS);
+    await this.keyRepository.create(keyEntity);
+    return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
   }
 
-  private async generateCode(type: number): Promise<string> {
+  private async generateCode(type: string): Promise<string> {
     const data = await this.keyRepository.getLatestId();
     let id = '1';
     if (data.id) {
       id = (data.id + 1).toString();
     }
-    if (type === SignEnum.STAND_EC) {
-      return `${cryptoTypeEnum.EC}.${id.padStart(4, '0')}`;
-    }
-    if (type === SignEnum.ENHANDCED_EC) {
-      return `${cryptoTypeEnum.EC}.${id.padStart(4, '0')}`;
-    }
+    return `${type}.${id.padStart(4, '0')}`;
   }
 }

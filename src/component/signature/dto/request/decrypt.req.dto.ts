@@ -5,4 +5,6 @@ import { BaseReqDto } from 'src/core/dto/base.dto';
 export class DecryptReqDto extends BaseReqDto {
   @Type(() => FileDto)
   files: FileDto[];
+
+  key: string;
 }

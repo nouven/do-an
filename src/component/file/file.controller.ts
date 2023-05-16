@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { isEmpty } from 'lodash';
 import { AuthGuard } from 'src/core/guard/verify-token.guard';
 import { GetFileListReqDto } from './dto/request/get-file-list.req.dto';
 import { GetFileURLReqDto } from './dto/request/get-file-url.req.dto';
+import { UpdateFileReqDto } from './dto/request/update-file.req.dto';
 import { UploadFileReqDto } from './dto/request/upload-file.req.dto';
 import { FileServiceInterface } from './interface/file.service.interface';
 
@@ -43,6 +45,19 @@ export class FileController {
   @Delete('/:id')
   public async delete(@Param('id', new ParseIntPipe()) id: number) {
     return this.FileService.delete(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('/:id')
+  public async update(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() body: UpdateFileReqDto,
+  ) {
+    const { request, responseError } = body;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return this.FileService.update({ id, ...request });
   }
 
   @UseGuards(AuthGuard)
