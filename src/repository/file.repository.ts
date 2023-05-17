@@ -85,11 +85,11 @@ export class FileRepository
           case 'isShared':
             const isShared = i.text === 'true';
             if (!isShared) {
-              query.where('u.id = :id', {
+              query.andWhere('u.id = :id', {
                 id: user?.id,
               });
             } else {
-              query.where('f.is_shared = :isShared', {
+              query.andWhere('f.is_shared = :isShared', {
                 isShared: i.text === 'true',
               });
             }
