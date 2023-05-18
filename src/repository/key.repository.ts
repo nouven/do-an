@@ -26,6 +26,15 @@ export class KeyRepository
     return keyEntity;
   }
 
+  public async getKeyByUserId(userId: number): Promise<any> {
+    return await this.keyRepository
+      .createQueryBuilder('k')
+      .select(['k.id AS "id"', 'k.publ as "publ"'])
+      .where('k.created_by = :userId', { userId })
+      .orderBy('k.id', 'DESC')
+      .getRawOne();
+  }
+
   public async getLatestId() {
     return await this.keyRepository
       .createQueryBuilder('k')

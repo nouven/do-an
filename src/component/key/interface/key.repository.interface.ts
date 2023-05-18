@@ -5,4 +5,5 @@ export interface KeyRepositoryInterface
   extends BaseInterfaceRepository<KeyEntity> {
   getLatestId(): Promise<any>;
   createEntity(req): KeyEntity;
+  getKeyByUserId(userId: number): Promise<any>;
 }

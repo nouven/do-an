@@ -16,6 +16,7 @@ import { UserServiceInterface } from './interface/user.service.interface';
 import { isEmpty } from 'lodash';
 import { AuthGuard } from 'src/core/guard/verify-token.guard';
 import { BaseReqDto } from 'src/core/dto/base.dto';
+import { GetUserListDtoReq } from './dto/request/get-user-list.req.dto';
 
 @Controller('users')
 export class UserController {
@@ -43,6 +44,16 @@ export class UserController {
   @Get(':id')
   public async getDetail(@Param('id', new ParseIntPipe()) id, @Query() query) {
     return await this.userService.getDetail(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/list')
+  public async getList(@Query() query: GetUserListDtoReq) {
+    const { request, responseError } = query;
+    if (!isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.userService.getList(request);
   }
 
   @UseGuards(AuthGuard)

@@ -82,10 +82,13 @@ export class RSA {
         16,
       )}${SEPR_CHAR}${this.e.toString(16)}${SEPR_CHAR}${this.n.toString(16)}`;
   }
-  public verify(signatrue: string, hashedMsg) {
-    const [type, prevHashedMsg, s, e, n] = signatrue.split(SEPR_CHAR);
+  public verify(signatrue: string, hashedMsg, key?: string) {
+    let [type, prevHashedMsg, s, e, n] = signatrue.split(SEPR_CHAR);
     this.e = bigInt(e, 16);
     this.n = bigInt(n, 16);
+    if (key) {
+      this.setPublKey(key);
+    }
     const m = bigInt(hashedMsg, 16);
 
     const v = bigInt(s, 16).modPow(this.e, this.n);

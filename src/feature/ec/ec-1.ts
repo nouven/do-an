@@ -42,15 +42,17 @@ export class EC {
     return this.makeSignature(msg, r, s);
   }
 
-  public verify(signature: string, hashedMsg: string) {
-    const { preHashedMsg, r, s, Px, Py } = this.breakSignature(signature);
+  public verify(signature: string, hashedMsg: string, key?: string) {
+    let { preHashedMsg, r, s, Px, Py } = this.breakSignature(signature);
     const m = bigInt(hashedMsg, 16);
     if (m.neq(preHashedMsg)) {
       console.log('<============>   ', 'data is changed!!');
       return false;
     }
-
     this.publ = new Point(Px, Py);
+    if (key) {
+      this.setPublicKey(key);
+    }
 
     const sinv = s.modInv(this.curve.n);
     const u1 = modulo(m.multiply(sinv), this.curve.n);

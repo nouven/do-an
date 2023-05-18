@@ -9,6 +9,7 @@ import { UserResDto } from './dto/response/user.res.dto';
 import { UserServiceInterface } from './interface/user.service.interface';
 import * as bcrypt from 'bcrypt';
 import { isEmpty } from 'lodash';
+import { GetUserListDtoReq } from './dto/request/get-user-list.req.dto';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
@@ -57,6 +58,16 @@ export class UserService implements UserServiceInterface {
     });
 
     return new ResponseBuilder(resData).withCode(ResponseCodeEnum.SUCCESS);
+  }
+
+  public async getList(request: GetUserListDtoReq): Promise<any> {
+    const data = await this.userRepository.findAll();
+    const resData = plainToInstance(UserResDto, data, {
+      excludeExtraneousValues: true,
+    });
+    return new ResponseBuilder(resData)
+      .withCode(ResponseCodeEnum.SUCCESS)
+      .build();
   }
 
   public async delete(id: number): Promise<any> {

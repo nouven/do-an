@@ -25,6 +25,8 @@ import { VerifyReqDto } from './dto/request/verify.req.dto';
 import { SignatureServiceInterface } from './interface/signature.service.interface';
 import * as crypto from 'crypto';
 import { EC } from 'src/feature/ec/ec-1';
+import { UserRepositoryInterface } from '../user/interface/user.respository.interface';
+import { KeyRepositoryInterface } from '../key/interface/key.repository.interface';
 
 @Injectable()
 export class SignatureService implements SignatureServiceInterface {
@@ -34,6 +36,12 @@ export class SignatureService implements SignatureServiceInterface {
 
     @Inject('FileRepositoryInterface')
     private readonly fileRespository: FileRepositoryInterface,
+
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
+
+    @Inject('KeyRepositoryInterface')
+    private readonly keyRepository: KeyRepositoryInterface,
   ) { }
 
   public async generateKey(req: GenerateKeyReqDto): Promise<any> {
@@ -77,6 +85,22 @@ export class SignatureService implements SignatureServiceInterface {
   }
 
   public async verify(req: VerifyReqDto): Promise<any> {
+    const { userId } = req;
+    const user = await this.userRepository.findOneById(userId);
+    if (isEmpty(user)) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.NOT_FOUND)
+        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
+        .build();
+    }
+    const key = await this.keyRepository.getKeyByUserId(userId);
+    if (isEmpty(key)) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.NOT_FOUND)
+        .withMessage(ErrorMessageEnum.KEY_NOT_FOUND)
+        .build();
+    }
+
     const file = req.files[0];
     const buffer = file.data;
     //const signature = await this.fileService.readSignature(uint8);
@@ -86,12 +110,20 @@ export class SignatureService implements SignatureServiceInterface {
     const hashedMsg = hash(buffer.slice(0, -SIGNTURE_SIZE));
 
     const [type] = signature.split(SEPR_CHAR);
+    const [keyType] = key.publ.split(SEPR_CHAR);
+    if (keyType !== type) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
+        .build();
+    }
+
     if (type === cryptoTypeEnum.EC) {
       const ec = new EC();
-      result = ec.verify(signature, hashedMsg);
+      result = ec.verify(signature, hashedMsg, key?.publ);
     } else if (type === cryptoTypeEnum.RSA) {
       const rsa = new RSA();
-      result = rsa.verify(signature, hashedMsg);
+      result = rsa.verify(signature, hashedMsg, key?.publ);
     } else {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)

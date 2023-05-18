@@ -9,4 +9,5 @@ export enum ErrorMessageEnum {
   UPLOAD_FAILED = 'upload failed',
   INVALID_SIGNATURE = 'Signature is invalid',
   VALID_SIGNATURE = 'Signature is valid',
+  KEY_NOT_FOUND = 'Key not found',
 }
