@@ -3,6 +3,7 @@ import { actionEnum, cryptoTypeEnum } from 'src/constant';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { TimeLogEntity } from 'src/entity/time-log.entity';
 import { ResponseBuilder } from 'src/utils/response-builder';
+import { Db } from 'typeorm';
 import { CreateTimeLogReqDto } from './dto/request/create-time-log.req.dto';
 import { GetTimeLogListReqDto } from './dto/request/get-time-log-list.req.dto';
 import { TimeLogRepositoryInterface } from './interface/time-log.repository.interface';
@@ -13,7 +14,7 @@ export class TimeLogService implements TimeLogServiceInterface {
   constructor(
     @Inject('TimeLogRepositoryInterface')
     private readonly timeLogRepository: TimeLogRepositoryInterface,
-  ) { }
+  ) {}
 
   public async create(req: CreateTimeLogReqDto): Promise<any> {
     const timeLogEntity = this.timeLogRepository.createEntity(req);
@@ -32,37 +33,57 @@ export class TimeLogService implements TimeLogServiceInterface {
     //  return { time, cryptoType: i.cryptoType, action: i.action };
     //});
 
-    const [keyLogTimesEc, keyLogTimesRsa, signLogTimesEc, signLogTimesRsa] =
-      await Promise.all([
-        this.timeLogRepository.getList({
-          ...req,
-          filter: [
-            { column: 'action', text: actionEnum.GENERATE_KEY },
-            { column: 'cryptoType', text: cryptoTypeEnum.EC },
-          ],
-        }),
-        this.timeLogRepository.getList({
-          ...req,
-          filter: [
-            { column: 'action', text: actionEnum.GENERATE_KEY },
-            { column: 'cryptoType', text: cryptoTypeEnum.RSA },
-          ],
-        }),
-        this.timeLogRepository.getList({
-          ...req,
-          filter: [
-            { column: 'action', text: actionEnum.SIGN },
-            { column: 'cryptoType', text: cryptoTypeEnum.EC },
-          ],
-        }),
-        this.timeLogRepository.getList({
-          ...req,
-          filter: [
-            { column: 'action', text: actionEnum.SIGN },
-            { column: 'cryptoType', text: cryptoTypeEnum.RSA },
-          ],
-        }),
-      ]);
+    const [
+      keyLogTimesEc,
+      keyLogTimesRsa,
+      signLogTimesEc,
+      signLogTimesRsa,
+      verifyLogTimeEc,
+      verifyLogTimeRsa,
+    ] = await Promise.all([
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.GENERATE_KEY },
+          { column: 'cryptoType', text: cryptoTypeEnum.EC },
+        ],
+      }),
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.GENERATE_KEY },
+          { column: 'cryptoType', text: cryptoTypeEnum.RSA },
+        ],
+      }),
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.SIGN },
+          { column: 'cryptoType', text: cryptoTypeEnum.EC },
+        ],
+      }),
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.SIGN },
+          { column: 'cryptoType', text: cryptoTypeEnum.RSA },
+        ],
+      }),
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.VERIFY },
+          { column: 'cryptoType', text: cryptoTypeEnum.EC },
+        ],
+      }),
+      this.timeLogRepository.getList({
+        ...req,
+        filter: [
+          { column: 'action', text: actionEnum.VERIFY },
+          { column: 'cryptoType', text: cryptoTypeEnum.RSA },
+        ],
+      }),
+    ]);
 
     const resData = {
       keyLogTimes: this.generateResponse(keyLogTimesEc).concat(
@@ -70,6 +91,9 @@ export class TimeLogService implements TimeLogServiceInterface {
       ),
       signLogTimes: this.generateResponse(signLogTimesEc).concat(
         this.generateResponse(signLogTimesRsa),
+      ),
+      verifyLogTimes: this.generateResponse(verifyLogTimeEc).concat(
+        this.generateResponse(verifyLogTimeRsa),
       ),
     };
 

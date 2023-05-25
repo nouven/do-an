@@ -7,6 +7,7 @@ import { FileRepository } from 'src/repository/file.repository';
 import { KeyRepository } from 'src/repository/key.repository';
 import { UserRepository } from 'src/repository/user.repository';
 import { FileModule } from '../file/file.module';
+import { TimeLogModule } from '../time-log/time-log.module';
 import { SignatureController } from './signature.controller';
 import { SignatureService } from './signature.service';
 
@@ -14,6 +15,7 @@ import { SignatureService } from './signature.service';
   imports: [
     TypeOrmModule.forFeature([UserEntity, FileEntity, KeyEntity]),
     FileModule,
+    TimeLogModule,
   ],
   exports: [],
   controllers: [SignatureController],
@@ -36,4 +38,4 @@ import { SignatureService } from './signature.service';
     },
   ],
 })
-export class SignatureModule { }
+export class SignatureModule {}

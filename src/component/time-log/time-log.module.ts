@@ -7,7 +7,12 @@ import { TimeLogService } from './time-log.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TimeLogEntity])],
-  exports: [],
+  exports: [
+    {
+      provide: 'TimeLogServiceInterface',
+      useClass: TimeLogService,
+    },
+  ],
   controllers: [TimeLogController],
   providers: [
     {
@@ -20,4 +25,4 @@ import { TimeLogService } from './time-log.service';
     },
   ],
 })
-export class TimeLogModule { }
+export class TimeLogModule {}

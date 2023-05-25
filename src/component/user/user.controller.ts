@@ -23,7 +23,7 @@ export class UserController {
   constructor(
     @Inject('UserServiceInterface')
     private readonly userService: UserServiceInterface,
-  ) { }
+  ) {}
 
   @Get('ping')
   ping() {

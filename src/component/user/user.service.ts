@@ -16,7 +16,7 @@ export class UserService implements UserServiceInterface {
   constructor(
     @Inject('UserRepositoryInterface')
     private readonly userRepository: UserRepository,
-  ) { }
+  ) {}
 
   public ping(): any {
     let x: BN;

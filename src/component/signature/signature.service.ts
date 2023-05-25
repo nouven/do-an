@@ -3,6 +3,7 @@ import * as bigi from 'bigi';
 import { Point } from 'ecurve';
 import { isEmpty } from 'lodash';
 import {
+  actionEnum,
   AES_ALGORITHM,
   cryptoTypeEnum,
   cryptoTypes,
@@ -27,6 +28,8 @@ import * as crypto from 'crypto';
 import { EC } from 'src/feature/ec/ec-1';
 import { UserRepositoryInterface } from '../user/interface/user.respository.interface';
 import { KeyRepositoryInterface } from '../key/interface/key.repository.interface';
+import { TimeLogServiceInterface } from '../time-log/interface/time-log.service.interface';
+import { CreateTimeLogReqDto } from '../time-log/dto/request/create-time-log.req.dto';
 
 @Injectable()
 export class SignatureService implements SignatureServiceInterface {
@@ -42,7 +45,10 @@ export class SignatureService implements SignatureServiceInterface {
 
     @Inject('KeyRepositoryInterface')
     private readonly keyRepository: KeyRepositoryInterface,
-  ) { }
+
+    @Inject('TimeLogServiceInterface')
+    private readonly timeLogService: TimeLogServiceInterface,
+  ) {}
 
   public async generateKey(req: GenerateKeyReqDto): Promise<any> {
     //const ec = new EC();
@@ -118,18 +124,35 @@ export class SignatureService implements SignatureServiceInterface {
         .build();
     }
 
+    let startedAt, endedAt;
+    let cryptoType = cryptoTypeEnum.EC;
+
     if (type === cryptoTypeEnum.EC) {
       const ec = new EC();
+      startedAt = new Date().toISOString();
       result = ec.verify(signature, hashedMsg, key?.publ);
+      endedAt = new Date().toISOString();
     } else if (type === cryptoTypeEnum.RSA) {
       const rsa = new RSA();
+      cryptoType = cryptoTypeEnum.RSA;
+      startedAt = new Date().toISOString();
       result = rsa.verify(signature, hashedMsg, key?.publ);
+      endedAt = new Date().toISOString();
     } else {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
         .build();
     }
+
+    //create time log
+    const createTimeLogReq = new CreateTimeLogReqDto();
+    createTimeLogReq.startedAt = startedAt;
+    createTimeLogReq.endedAt = endedAt;
+    createTimeLogReq.cryptoType = cryptoType;
+    createTimeLogReq.action = actionEnum.VERIFY;
+    await this.timeLogService.create(createTimeLogReq);
+
     if (!result) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
