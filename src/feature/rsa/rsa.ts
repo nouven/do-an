@@ -1,6 +1,10 @@
 import { BigInteger } from 'big-integer';
 import * as bigInt from 'big-integer';
-import { cryptoTypeEnum, SEPR_CHAR } from 'src/constant';
+import {
+  cryptoTypeEnum,
+  SEPR_CHAR,
+  verificationResultEnum,
+} from 'src/constant';
 
 export class RSA {
   private e: BigInteger;
@@ -77,10 +81,11 @@ export class RSA {
     const m = bigInt(hashedMsg, 16);
     const s = m.modPow(this.d, this.n);
     //type-hashedMsg-s-e-n
-    return `${cryptoTypeEnum.RSA
-      }${SEPR_CHAR}${hashedMsg}${SEPR_CHAR}${s.toString(
-        16,
-      )}${SEPR_CHAR}${this.e.toString(16)}${SEPR_CHAR}${this.n.toString(16)}`;
+    return `${
+      cryptoTypeEnum.RSA
+    }${SEPR_CHAR}${hashedMsg}${SEPR_CHAR}${s.toString(
+      16,
+    )}${SEPR_CHAR}${this.e.toString(16)}${SEPR_CHAR}${this.n.toString(16)}`;
   }
   public verify(signatrue: string, hashedMsg, key?: string) {
     let [type, prevHashedMsg, s, e, n] = signatrue.split(SEPR_CHAR);
@@ -89,9 +94,18 @@ export class RSA {
     if (key) {
       this.setPublKey(key);
     }
+    const prem = bigInt(prevHashedMsg, 16);
     const m = bigInt(hashedMsg, 16);
 
+    if (prem.neq(m)) {
+      return verificationResultEnum.MESSAGE_IS_CHANGED;
+    }
+
     const v = bigInt(s, 16).modPow(this.e, this.n);
-    return v.eq(m);
+    if (v.eq(m)) {
+      return verificationResultEnum.SIGNATURE_IS_VALID;
+    } else {
+      return verificationResultEnum.PUBLIC_KEY_IS_CHANGED;
+    }
   }
 }

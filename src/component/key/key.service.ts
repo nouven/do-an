@@ -3,6 +3,7 @@ import { cryptoTypeEnum, SEPR_CHAR } from 'src/constant';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { CreateKeyReqDto } from './dto/create-key.req.dto';
+import { GetKeyByUserIdReqDto } from './dto/get-key-by-user-id.req.dto';
 import { KeyRepositoryInterface } from './interface/key.repository.interface';
 import { KeyServiceInterface } from './interface/key.service.interface';
 
@@ -11,7 +12,7 @@ export class KeyService implements KeyServiceInterface {
   constructor(
     @Inject('KeyRepositoryInterface')
     private readonly keyRepository: KeyRepositoryInterface,
-  ) { }
+  ) {}
   public async create(req: CreateKeyReqDto): Promise<any> {
     const { key } = req;
     const { id } = req.user;
@@ -28,6 +29,11 @@ export class KeyService implements KeyServiceInterface {
     //handle save key
     await this.keyRepository.create(keyEntity);
     return new ResponseBuilder().withCode(ResponseCodeEnum.SUCCESS).build();
+  }
+
+  public async getKeyByUserid(req: GetKeyByUserIdReqDto): Promise<any> {
+    const key = await this.keyRepository.getKeyByUserId(req?.userId);
+    return new ResponseBuilder(key).withCode(ResponseCodeEnum.SUCCESS).build();
   }
 
   private async generateCode(type: string): Promise<string> {

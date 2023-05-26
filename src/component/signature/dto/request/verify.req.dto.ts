@@ -8,4 +8,6 @@ export class VerifyReqDto extends BaseReqDto {
 
   @Transform(({ value }) => Number(value))
   userId: number;
+
+  publKey: string;
 }

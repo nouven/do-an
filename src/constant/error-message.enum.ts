@@ -7,7 +7,10 @@ export enum ErrorMessageEnum {
   SUCCESS = 'Success',
   TOKEN_EXPIRED = 'Token expired',
   UPLOAD_FAILED = 'upload failed',
-  INVALID_SIGNATURE = 'Signature is invalid',
+  INVALID_SIGNATURE = 'Signature is invalid or public key is changed',
   VALID_SIGNATURE = 'Signature is valid',
   KEY_NOT_FOUND = 'Key not found',
+  MESSAGE_IS_CHANGED = 'Message is changed',
+  PUBLIC_KEY_IS_CHANGED = 'Public key is changed',
+  SIGNATURE_IS_VALID = 'Signature is valid',
 }

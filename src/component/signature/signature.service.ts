@@ -9,6 +9,7 @@ import {
   cryptoTypes,
   SEPR_CHAR,
   SIGNTURE_SIZE,
+  verificationResultEnum,
 } from 'src/constant';
 import { ErrorMessageEnum } from 'src/constant/error-message.enum';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
@@ -91,7 +92,7 @@ export class SignatureService implements SignatureServiceInterface {
   }
 
   public async verify(req: VerifyReqDto): Promise<any> {
-    const { userId } = req;
+    const { userId, publKey } = req;
     const user = await this.userRepository.findOneById(userId);
     if (isEmpty(user)) {
       return new ResponseBuilder()
@@ -99,7 +100,9 @@ export class SignatureService implements SignatureServiceInterface {
         .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
         .build();
     }
-    const key = await this.keyRepository.getKeyByUserId(userId);
+    //const key = await this.keyRepository.getKeyByUserId(userId);
+    const key = { publ: publKey };
+
     if (isEmpty(key)) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.NOT_FOUND)
@@ -110,17 +113,18 @@ export class SignatureService implements SignatureServiceInterface {
     const file = req.files[0];
     const buffer = file.data;
     //const signature = await this.fileService.readSignature(uint8);
-    let result = false;
+    let result;
 
     const signature = removePad(buffer.slice(-SIGNTURE_SIZE)).toString();
     const hashedMsg = hash(buffer.slice(0, -SIGNTURE_SIZE));
 
     const [type] = signature.split(SEPR_CHAR);
     const [keyType] = key.publ.split(SEPR_CHAR);
+
     if (keyType !== type) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
-        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
+        .withMessage(ErrorMessageEnum.MESSAGE_IS_CHANGED)
         .build();
     }
 
@@ -153,10 +157,15 @@ export class SignatureService implements SignatureServiceInterface {
     createTimeLogReq.action = actionEnum.VERIFY;
     await this.timeLogService.create(createTimeLogReq);
 
-    if (!result) {
+    if (result === verificationResultEnum.MESSAGE_IS_CHANGED) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
-        .withMessage(ErrorMessageEnum.INVALID_SIGNATURE)
+        .withMessage(ErrorMessageEnum.MESSAGE_IS_CHANGED)
+        .build();
+    } else if (result === verificationResultEnum.PUBLIC_KEY_IS_CHANGED) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(ErrorMessageEnum.PUBLIC_KEY_IS_CHANGED)
         .build();
     }
     return new ResponseBuilder()

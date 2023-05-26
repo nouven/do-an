@@ -4,7 +4,11 @@ import { Point } from './point';
 import { add, modulo, multiply } from './math';
 import { Buffer } from 'buffer';
 import { randomBytes } from 'crypto';
-import { cryptoTypeEnum, SEPR_CHAR } from 'src/constant';
+import {
+  cryptoTypeEnum,
+  SEPR_CHAR,
+  verificationResultEnum,
+} from 'src/constant';
 import * as bigInt from 'big-integer';
 
 export class EC {
@@ -46,8 +50,7 @@ export class EC {
     let { preHashedMsg, r, s, Px, Py } = this.breakSignature(signature);
     const m = bigInt(hashedMsg, 16);
     if (m.neq(preHashedMsg)) {
-      console.log('<============>   ', 'data is changed!!');
-      return false;
+      return verificationResultEnum.MESSAGE_IS_CHANGED;
     }
     this.publ = new Point(Px, Py);
     if (key) {
@@ -73,7 +76,11 @@ export class EC {
     );
     const R = add(R1, R2, this.curve.a, this.curve.p);
 
-    return r.eq(R.x);
+    if (r.eq(R.x)) {
+      return verificationResultEnum.SIGNATURE_IS_VALID;
+    } else {
+      return verificationResultEnum.PUBLIC_KEY_IS_CHANGED;
+    }
   }
 
   public setPrivateKey(privKey: string) {
