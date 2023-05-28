@@ -102,6 +102,10 @@ export class RSA {
     }
 
     const v = bigInt(s, 16).modPow(this.e, this.n);
+
+    console.log('<=========> m: ', m.toString(16));
+    console.log('<=========> : s^e mod n:', v.toString(16));
+
     if (v.eq(m)) {
       return verificationResultEnum.SIGNATURE_IS_VALID;
     } else {

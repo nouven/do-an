@@ -17,7 +17,7 @@ export class TimeLogController {
   constructor(
     @Inject('TimeLogServiceInterface')
     private readonly timeLogService: TimeLogServiceInterface,
-  ) { }
+  ) {}
 
   @Post('/create')
   public async create(@Body() body: CreateTimeLogReqDto) {

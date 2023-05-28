@@ -76,6 +76,9 @@ export class EC {
     );
     const R = add(R1, R2, this.curve.a, this.curve.p);
 
+    console.log('<=========> r: ', r.toString(16));
+    console.log('<=========> Px: ', R.x.toString(16));
+
     if (r.eq(R.x)) {
       return verificationResultEnum.SIGNATURE_IS_VALID;
     } else {

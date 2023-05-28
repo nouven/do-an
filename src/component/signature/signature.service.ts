@@ -118,8 +118,12 @@ export class SignatureService implements SignatureServiceInterface {
     const signature = removePad(buffer.slice(-SIGNTURE_SIZE)).toString();
     const hashedMsg = hash(buffer.slice(0, -SIGNTURE_SIZE));
 
-    const [type] = signature.split(SEPR_CHAR);
+    console.log('<=========> hashed message:', hashedMsg);
+
+    const [type, m] = signature.split(SEPR_CHAR);
     const [keyType] = key.publ.split(SEPR_CHAR);
+
+    console.log('<=========> pre hashed message:', m);
 
     if (keyType !== type) {
       return new ResponseBuilder()
