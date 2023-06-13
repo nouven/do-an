@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  nest-service:
+    build:
+      context: .
+      target: develop
+    command: npm run start:dev

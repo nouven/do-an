@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { actionEnum, cryptoTypeEnum } from 'src/constant';
 import { ResponseCodeEnum } from 'src/constant/response-code.enum';
-import { TimeLogEntity } from 'src/entity/time-log.entity';
+import { TimeLogEntity } from 'src/entity/time-log/time-log.entity';
 import { ResponseBuilder } from 'src/utils/response-builder';
 import { Db } from 'typeorm';
 import { CreateTimeLogReqDto } from './dto/request/create-time-log.req.dto';

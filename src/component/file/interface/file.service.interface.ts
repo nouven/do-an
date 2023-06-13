@@ -1,4 +1,4 @@
-import { FileEntity } from 'src/entity/file.entity';
+
 import { GetFileListReqDto } from '../dto/request/get-file-list.req.dto';
 import { GetFileURLReqDto } from '../dto/request/get-file-url.req.dto';
 import { UpdateFileReqDto } from '../dto/request/update-file.req.dto';

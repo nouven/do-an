@@ -16,51 +16,17 @@ import { MinioStorageModule } from './component/minio-storage/minio-storage.modu
 import { KeyModule } from './component/key/key.module';
 import { SignatureModule } from './component/signature/signature.module';
 import { TimeLogModule } from './component/time-log/time-log.module';
-
-//const firebaseConfig = {
-//  apiKey: "AIzaSyAkztoAUoCU4MeDc1jRkVyl7vPRO3t6Tf0",
-//  authDomain: "doan-89e3e.firebaseapp.com",
-//  projectId: "doan-89e3e",
-//  storageBucket: "doan-89e3e.appspot.com",
-//  messagingSenderId: "426978642179",
-//  appId: "1:426978642179:web:bbfc3127655524a1ac4136",
-//  measurementId: "G-BX1833SD63"
-//};
+import connectionOptions from './config/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    //FirebaseModule.forRoot({
-    //  googleApplicationCredential: './config/firebase.json',
-    //}),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      //logging: process.env.NODE_ENV === 'development',
-      entities: [path.join(__dirname, '/entity/**/*.entity.{ts,js}')],
-      migrations: [path.join(__dirname, '/database/migrations/*.{ts,js}')],
-      subscribers: ['dist/observers/subscribers/*.subscriber.{ts,js}'],
-
-      // We are using migrations, synchronize should be set to false.
-      synchronize: false,
-      // Run migrations automatically,
-      // you can disable this if you prefer running migration manually.
-      //migrationsRun: !isDevMode(),
-      //extra: {
-      //  max: parseInt(process.env.DATABASE_MAX_POOL) || 20,
-      //},
-      namingStrategy: new SnakeNamingStrategy(),
-    }),
+    TypeOrmModule.forRoot(connectionOptions.options),
     UserModule,
     AuthModule,
     FileModule,
-    //StorageModule,
     MinioStorageModule,
     KeyModule,
     SignatureModule,
@@ -75,4 +41,4 @@ import { TimeLogModule } from './component/time-log/time-log.module';
     AppService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

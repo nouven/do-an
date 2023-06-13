@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KeyRepositoryInterface } from 'src/component/key/interface/key.repository.interface';
 import { BaseAbstractRepository } from 'src/core/repository/base.abstract.repository';
-import { KeyEntity } from 'src/entity/key.entity';
+import { KeyEntity } from 'src/entity/key/key.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class KeyRepository
   extends BaseAbstractRepository<KeyEntity>
-  implements KeyRepositoryInterface {
+  implements KeyRepositoryInterface
+{
   constructor(
     @InjectRepository(KeyEntity)
     private readonly keyRepository: Repository<KeyEntity>,

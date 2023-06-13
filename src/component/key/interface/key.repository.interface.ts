@@ -1,5 +1,5 @@
 import { BaseInterfaceRepository } from 'src/core/repository/base.interface.repository';
-import { KeyEntity } from 'src/entity/key.entity';
+import { KeyEntity } from 'src/entity/key/key.entity';
 
 export interface KeyRepositoryInterface
   extends BaseInterfaceRepository<KeyEntity> {

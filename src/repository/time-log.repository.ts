@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GetTimeLogListReqDto } from 'src/component/time-log/dto/request/get-time-log-list.req.dto';
 import { TimeLogRepositoryInterface } from 'src/component/time-log/interface/time-log.repository.interface';
 import { BaseAbstractRepository } from 'src/core/repository/base.abstract.repository';
-import { TimeLogEntity } from 'src/entity/time-log.entity';
+import { TimeLogEntity } from 'src/entity/time-log/time-log.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

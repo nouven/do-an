@@ -1,6 +1,4 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { KeyEntity } from './key.entity';
-import { UserEntity } from './user.entity';
 
 @Entity('files')
 export class FileEntity {

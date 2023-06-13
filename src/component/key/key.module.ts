@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { KeyEntity } from 'src/entity/key.entity';
+import { KeyEntity } from 'src/entity/key/key.entity';
 import { KeyRepository } from 'src/repository/key.repository';
 import { KeyServiceInterface } from './interface/key.service.interface';
 import { KeyController } from './key.controller';
@@ -26,4 +26,4 @@ import { KeyService } from './key.service';
   ],
   controllers: [KeyController],
 })
-export class KeyModule { }
+export class KeyModule {}

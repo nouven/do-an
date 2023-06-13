@@ -1,5 +1,33 @@
 version: '3'
 services:
+  nest-service:
+    container_name: ${APP_CONTAINER_NAME}
+    image: ${APP_IMAGE_NAME}
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - my-net
+    # my-net:
+    #   ipv4_address: ${APP_CONTAINER_NETWORK_IP}
+    ports:
+      - ${APP_CONTAINER_PORT}:${APP_SERVER_PORT}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+  # migration:
+  #   image: ${APP_IMAGE_NAME}
+  #   env_file:
+  #     - .env
+  #   command: npm run migrate:run
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - my-net
+
   minio:
     image: minio/minio
     env_file:
@@ -14,6 +42,8 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: qwe@1234
     command: server --console-address ":9001" /data
+    networks:
+      - my-net
 
   postgres:
     container_name: ${DATABASE_CONTAINER_NAME}
@@ -28,7 +58,13 @@ services:
     volumes:
       - postgres-db:/data/postgres
     ports:
-      - ${DATABASE_CONTAINER_PORT}:${DATABASE_PORT}
+      - ${DATABASE_CONTAINER_PORT}:${DATABASE_SERVER_PORT}
+    networks:
+      - my-net
 volumes:
   postgres-db:
   minio-storage:
+networks:
+  my-net:
+    name: ${NET_NAME}
+    external: true

@@ -6,6 +6,9 @@ import {
 import { AppModule } from './app.module';
 import { ValidationPipe } from './core/pipe/validation.pipe';
 import * as multipart from 'fastify-multipart';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter({});
@@ -18,9 +21,10 @@ async function bootstrap() {
     AppModule,
     fastifyAdapter,
   );
+
   app.enableCors();
   app.setGlobalPrefix('/api/v1');
   //app.useGlobalPipes(new ValidationPipe()),
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(parseInt(process.env.APP_SERVER_PORT), '0.0.0.0');
 }
 bootstrap();

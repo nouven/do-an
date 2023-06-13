@@ -4,13 +4,14 @@ import { extend, isEmpty } from 'lodash';
 import { GetFileListReqDto } from 'src/component/file/dto/request/get-file-list.req.dto';
 import { FileRepositoryInterface } from 'src/component/file/interface/file.repository.interface';
 import { BaseAbstractRepository } from 'src/core/repository/base.abstract.repository';
-import { FileEntity } from 'src/entity/file.entity';
+import { FileEntity } from 'src/entity/file/file.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class FileRepository
   extends BaseAbstractRepository<FileEntity>
-  implements FileRepositoryInterface {
+  implements FileRepositoryInterface
+{
   constructor(
     @InjectRepository(FileEntity)
     private readonly fileRepository: Repository<FileEntity>,

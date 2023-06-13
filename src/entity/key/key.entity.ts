@@ -5,8 +5,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FileEntity } from './file.entity';
-import { UserEntity } from './user.entity';
 
 @Entity('keys')
 export class KeyEntity {

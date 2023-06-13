@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
-//import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { types } from 'pg';
 import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ const ormConfig = {
   database: process.env.DATABASE_NAME,
   //logging: process.env.NODE_ENV === 'development',
 };
+
 const connectionOptions = new DataSource({
   type: 'postgres',
   host: ormConfig.host,
@@ -34,7 +35,7 @@ const connectionOptions = new DataSource({
   extra: {
     max: ormConfig.maxPool,
   },
-  //namingStrategy: new SnakeNamingStrategy(),
+  namingStrategy: new SnakeNamingStrategy(),
 });
 
 types.setTypeParser(types.builtins.INT8, (value: string): number =>

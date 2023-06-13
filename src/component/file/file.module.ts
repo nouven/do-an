@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileEntity } from 'src/entity/file.entity';
+import { FileEntity } from 'src/entity/file/file.entity';
 import { FileRepository } from 'src/repository/file.repository';
 import { MinioStorageModule } from '../minio-storage/minio-storage.module';
 import { FileController } from './file.controller';
@@ -26,4 +26,4 @@ import { FileService } from './file.service';
     },
   ],
 })
-export class FileModule { }
+export class FileModule {}

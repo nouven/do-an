@@ -21,6 +21,4 @@ COPY . .
 
 COPY --from=develop /app/dist ./dist
 
-EXPOSE 5001
-
 CMD [ "npm", "run", "start:prod" ]

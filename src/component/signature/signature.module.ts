@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileEntity } from 'src/entity/file.entity';
-import { KeyEntity } from 'src/entity/key.entity';
-import { UserEntity } from 'src/entity/user.entity';
+import { FileEntity } from 'src/entity/file/file.entity';
+import { KeyEntity } from 'src/entity/key/key.entity';
+import { UserEntity } from 'src/entity/user/user.entity';
 import { FileRepository } from 'src/repository/file.repository';
 import { KeyRepository } from 'src/repository/key.repository';
 import { UserRepository } from 'src/repository/user.repository';
