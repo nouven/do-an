@@ -86,8 +86,12 @@ export class FileService implements FileServiceInterface {
       .build();
   }
 
-  public async getObject(fileName: string): Promise<any> {
-    return await this.minioStorageService.getObject(fileName);
+  public async getObject(id: number): Promise<any> {
+    const data = await this.fileRepository.findOneById(id);
+    if (isEmpty(data)) {
+      return new ResponseBuilder().withCode(ResponseCodeEnum.NOT_FOUND).build();
+    }
+    return await this.minioStorageService.getObject(data.name);
   }
 
   public async getList(req: GetFileListReqDto): Promise<any> {

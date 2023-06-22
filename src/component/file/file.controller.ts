@@ -72,6 +72,6 @@ export class FileController {
 
   @Get('/file-url/:id')
   public async getFileUrl(@Param('id', new ParseIntPipe()) id: number) {
-    return this.FileService.getFileUrl(id);
+    return this.FileService.getObject(id);
   }
 }

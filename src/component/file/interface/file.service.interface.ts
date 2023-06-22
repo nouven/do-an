@@ -9,7 +9,8 @@ export interface FileServiceInterface {
   update(req: UpdateFileReqDto): Promise<any>;
   getList(req: GetFileListReqDto): Promise<any>;
   getDetail(id: number): Promise<any>;
-  getObject(fileName): Promise<any>;
+  //getObject(fileName): Promise<any>;
+  getObject(id: number): Promise<any>;
   getFileUrl(id: number): Promise<any>;
   delete(id: number): Promise<any>;
   readSignature(buffer: Buffer): Promise<any>;
